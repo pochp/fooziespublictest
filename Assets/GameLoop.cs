@@ -135,11 +135,9 @@ public class GameLoop : MonoBehaviour {
                 CurrentSplashState.CurrentState = SplashState.State.RoundOver_ShowResult;
                 CurrentSplashState.FramesRemaining = FRAMES_END_ROUND_SPLASH;
             }
-            else
-            {
-                --currentState.RemainingTime;
-                m_previousState = currentState;
-            }
+            --currentState.RemainingTime;
+            m_previousState = currentState;
+
         }
 
         //5. Render Scene
