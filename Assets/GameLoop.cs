@@ -67,7 +67,7 @@ public class GameLoop : MonoBehaviour {
     const int BLOCK_HITSTOP = 10;
     const int STARTING_POSITION = 5000;
     const int FRAMES_PER_ROUND = 1800; //30 seconds
-    const int ARENA_RADIUS = 10000;
+    const int ARENA_RADIUS = 8700;
     const int ROUNDS_TO_WIN = 5;
 
     /// <summary>
