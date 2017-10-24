@@ -3,10 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GameplayRenderer : MonoBehaviour {
+    
 
-    public Material m_red;
-    public Material m_blue;
-    public Material m_white;
+    public Material P1_Active;
+    public Material P1_Character;
+    public Material P1_Recovery;
+    public Material P1_Startup;
+    public Material P2_Active;
+    public Material P2_Character;
+    public Material P2_Recovery;
+    public Material P2_Startup;
 
     public Sprite TXT_1;
     public Sprite TXT_2;
@@ -215,11 +221,51 @@ public class GameplayRenderer : MonoBehaviour {
         {
             case GameplayEnums.HitboxType.Hitbox_Attack:
             case GameplayEnums.HitboxType.Hitbox_Throw:
-                _renderBox.ObjectInGame.GetComponent<Renderer>().material = m_red;
+                if(_p1)
+                    _renderBox.ObjectInGame.GetComponent<Renderer>().material = P1_Active;
+                else
+                    _renderBox.ObjectInGame.GetComponent<Renderer>().material = P2_Active;
                 break;
             case GameplayEnums.HitboxType.Hurtbox_Limb:
             case GameplayEnums.HitboxType.Hurtbox_Main:
-                _renderBox.ObjectInGame.GetComponent<Renderer>().material = m_blue;
+                GameplayEnums.CharacterState currentCharacterState;
+                if (_p1)
+                    currentCharacterState = _gameState.P1_State;
+                else
+                    currentCharacterState = _gameState.P2_State;
+                Material toSet;
+                switch(currentCharacterState)
+                {
+                    case GameplayEnums.CharacterState.AttackActive:
+                    case GameplayEnums.CharacterState.AttackStartup:
+                    case GameplayEnums.CharacterState.SpecialActive:
+                    case GameplayEnums.CharacterState.SpecialStartup:
+                    case GameplayEnums.CharacterState.ThrowActive:
+                    case GameplayEnums.CharacterState.ThrowStartup:
+                        if (_p1)
+                            toSet = P1_Startup;
+                        else
+                            toSet = P2_Startup;
+                        break;
+                    case GameplayEnums.CharacterState.AttackRecovery:
+                    case GameplayEnums.CharacterState.Blockstun:
+                    case GameplayEnums.CharacterState.Clash:
+                    case GameplayEnums.CharacterState.SpecialRecovery:
+                    case GameplayEnums.CharacterState.ThrowBreak:
+                    case GameplayEnums.CharacterState.ThrowRecovery:
+                        if (_p1)
+                            toSet = P1_Recovery;
+                        else
+                            toSet = P2_Recovery;
+                        break;
+                    default:
+                        if (_p1)
+                            toSet = P1_Character;
+                        else
+                            toSet = P2_Character;
+                        break;
+                }
+                _renderBox.ObjectInGame.GetComponent<Renderer>().material = toSet;
                 break;
         }
         m_activeHitboxes.Add(_renderBox);
