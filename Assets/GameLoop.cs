@@ -54,7 +54,7 @@ public class GameLoop : MonoBehaviour {
     const int THROW_ACTIVE_RANGE = 500;
     const int THROW_RECOVERY_HURTBOX = 400;
     const int WALK_F_SPEED = 135;
-    const int WALK_B_SPEED = -130;
+    const int WALK_B_SPEED = -100;
     const int ATTACK_HITSTOP = 5;
     const int ATTACK_BLOCKSTUN = 20;
     const int ATTACK_PUSHBACK_SPEED = -120;
@@ -613,8 +613,11 @@ public class GameLoop : MonoBehaviour {
                             }
                         if (hg.HitboxType == GameplayEnums.HitboxType.Hitbox_Throw)
                             if (DoHitboxesOverlap(hg, p2_hg, _currentState))
-                            { 
-                                p1_throws_p2 = true;
+                            {
+                                if (_currentState.P2_State == GameplayEnums.CharacterState.ThrowStartup)
+                                    throwBreak = true;
+                                else
+                                    p1_throws_p2 = true;
                                 hg.HasStruck = true;
                             }
                     }
@@ -659,8 +662,11 @@ public class GameLoop : MonoBehaviour {
                             }
                         if (hg.HitboxType == GameplayEnums.HitboxType.Hitbox_Throw)
                             if (DoHitboxesOverlap(p1_hg, hg, _currentState))
-                            { 
-                                p2_throws_p1 = true;
+                            {
+                                if (_currentState.P1_State == GameplayEnums.CharacterState.ThrowStartup)
+                                    throwBreak = true;
+                                else
+                                    p2_throws_p1 = true;
                                 hg.HasStruck = true;
                             }
                     }
@@ -939,6 +945,7 @@ public class GameLoop : MonoBehaviour {
                     currentPlayerState = GameplayEnums.CharacterState.Idle;
                     stateFrames = 0;
                 }
+                positionOffset = BREAK_PUSHBACK;
                 break;
             case GameplayEnums.CharacterState.ThrowingOpponent:
                 if (stateFrames > THROW_BREAK_WINDOW)
