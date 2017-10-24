@@ -19,7 +19,7 @@ InputManager:
     snap: 1
     invert: 0
     type: 2
-    axis: 5
+    axis: 4
     joyNum: 1
   - serializedVersion: 3
     m_Name: Horizontal_PsStick2
@@ -35,7 +35,7 @@ InputManager:
     snap: 1
     invert: 0
     type: 2
-    axis: 5
+    axis: 4
     joyNum: 2
   - serializedVersion: 3
     m_Name: Horizontal_KB1
@@ -83,7 +83,7 @@ InputManager:
     snap: 1
     invert: 0
     type: 2
-    axis: 6
+    axis: 5
     joyNum: 1
   - serializedVersion: 3
     m_Name: Vertical_PsStick2
@@ -99,7 +99,7 @@ InputManager:
     snap: 1
     invert: 0
     type: 2
-    axis: 6
+    axis: 5
     joyNum: 2
   - serializedVersion: 3
     m_Name: Vertical_KB1
@@ -140,7 +140,7 @@ InputManager:
     negativeButton: 
     positiveButton: r
     altNegativeButton: 
-    altPositiveButton: joystick 1 button 2
+    altPositiveButton: joystick 1 button 0
     gravity: 1000
     dead: 0.001
     sensitivity: 1000
@@ -156,7 +156,7 @@ InputManager:
     negativeButton: 
     positiveButton: b
     altNegativeButton: 
-    altPositiveButton: joystick 2 button 2
+    altPositiveButton: joystick 2 button 0
     gravity: 1000
     dead: 0.001
     sensitivity: 1000

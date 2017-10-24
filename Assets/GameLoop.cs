@@ -183,36 +183,42 @@ public class GameLoop : MonoBehaviour {
         return true;
     }
 
-    void OnGUI()
-    {
-        float msec = deltaTime * 1000.0f;
-        float fps = 1.0f / deltaTime;
-        string fpstext = string.Format("{0:0.0} ms ({1:0.} fps)", msec, fps);
-        //string output = "FPS : " + fpstext +
-        //    "\n\rP1 Current Action : " + m_previousState.P1_State.ToString() +
-        //    "\n\rP1 dir : " + m_p1LastInputs.JoystickDirection.ToString() +
-        //    "\n\rP1 A : " + m_p1LastInputs.A.ToString() +
-        //    "\n\rP1 B : " + m_p1LastInputs.B.ToString() +
-        //    "\n\rP1 X : " + Input.GetAxis("Horizontal_P1").ToString() +
-        //    "\n\rP1 Y : " + Input.GetAxis("Vertical_P1").ToString() +
-        //    "\n\rP2 Current Action : " + m_previousState.P2_State.ToString() +
-        //    "\n\rP2 dir : " + m_p2LastInputs.JoystickDirection.ToString() +
-        //    "\n\rP2 A : " + m_p2LastInputs.A.ToString() +
-        //    "\n\rP2 B : " + m_p2LastInputs.B.ToString() +
-        //    "\n\rP2 X : " + Input.GetAxis("Horizontal_P2").ToString() +
-        //    "\n\rP2 Y : " + Input.GetAxis("Vertical_P2").ToString();
-    
-        string score = "P1 Score : " + Match.P1_Score.ToString() +
-            "\n\rP2 Score : " + Match.P2_Score.ToString() +
-            "\n\rTime : " + (m_previousState.RemainingTime / 60 ).ToString();
-
-
-        //string splash = CurrentSplashState.CurrentState.ToString() + CurrentSplashState.FramesRemaining.ToString();
-    
-    
-    
-        GUI.TextArea(new Rect(10, 10, Screen.width - 10, Screen.height / 5), score);
-    }
+    //void OnGUI()
+    //{
+    //    float msec = deltaTime * 1000.0f;
+    //    float fps = 1.0f / deltaTime;
+    //    string fpstext = string.Format("{0:0.0} ms ({1:0.} fps)", msec, fps);
+    //    string output = "FPS : " + fpstext +
+    //        "\n\rP1 Current Action : " + m_previousState.P1_State.ToString() +
+    //        "\n\rP1 dir : " + m_p1LastInputs.JoystickDirection.ToString() +
+    //        "\n\rP1 A : " + m_p1LastInputs.A.ToString() +
+    //        "\n\rP1 B : " + m_p1LastInputs.B.ToString() +
+    //        "\n\rP1 X : " + Input.GetAxisRaw("Horizontal_PsStick1").ToString() +
+    //        "\n\rP1 Y : " + Input.GetAxisRaw("Vertical_PsStick1").ToString() +
+    //        "\n\rP2 Current Action : " + m_previousState.P2_State.ToString() +
+    //        "\n\rP2 dir : " + m_p2LastInputs.JoystickDirection.ToString() +
+    //        "\n\rP2 A : " + m_p2LastInputs.A.ToString() +
+    //        "\n\rP2 B : " + m_p2LastInputs.B.ToString() +
+    //        "\n\rP2 X : " + Input.GetAxisRaw("Horizontal_PsStick2").ToString() +
+    //        "\n\rP2 Y : " + Input.GetAxisRaw("Vertical_PsStick2").ToString();
+    //
+    //  
+    //
+    //    //string joystickdirs = "P2 dir : " + m_p2LastInputs.JoystickDirection.ToString() +
+    //    //    "\n\rP2 X : " + Input.GetAxisRaw("Horizontal_PsStick2").ToString();
+    //
+    //    //
+    //    string score = "\n\rP1 Score : " + Match.P1_Score.ToString() +
+    //        "\n\rP2 Score : " + Match.P2_Score.ToString() +
+    //        "\n\rTime : " + (m_previousState.RemainingTime / 60 ).ToString();
+    //
+    //
+    //    //string splash = CurrentSplashState.CurrentState.ToString() + CurrentSplashState.FramesRemaining.ToString();
+    //
+    //
+    //
+    //    GUI.TextArea(new Rect(10, 10, Screen.width - 10, Screen.height / 2), output + score);
+    //}
 
     private void HandleOutcome(MatchOutcome _outcome)
     {
@@ -282,8 +288,8 @@ public class GameLoop : MonoBehaviour {
         {
             //if(P1_Joystick)
             {
-                h = Input.GetAxis("Horizontal_PsStick1") + Input.GetAxis("Horizontal_KB1"); ;
-                v = Input.GetAxis("Vertical_PsStick1") + Input.GetAxis("Vertical_KB1");
+                h = Input.GetAxisRaw("Horizontal_PsStick1") + Input.GetAxisRaw("Horizontal_KB1"); ;
+                v = Input.GetAxisRaw("Vertical_PsStick1") + Input.GetAxisRaw("Vertical_KB1");
             }
             //else
             //{
@@ -299,8 +305,8 @@ public class GameLoop : MonoBehaviour {
         {
             //if (P2_Joystick)
             {
-                h = Input.GetAxis("Horizontal_PsStick2") + Input.GetAxis("Horizontal_KB2");
-                v = Input.GetAxis("Vertical_PsStick2") + Input.GetAxis("Vertical_KB2");
+                h = Input.GetAxisRaw("Horizontal_PsStick2") + Input.GetAxisRaw("Horizontal_KB2");
+                v = Input.GetAxisRaw("Vertical_PsStick2") + Input.GetAxisRaw("Vertical_KB2");
             }
             //else
             //{
