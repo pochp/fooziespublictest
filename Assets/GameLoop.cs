@@ -51,7 +51,7 @@ public class GameLoop : MonoBehaviour {
     const int THROW_RECOVERY = 30;
     const int THROW_BREAK_WINDOW = 5;
     const int THROW_STARTUP_HURTBOX = 400;
-    const int THROW_ACTIVE_RANGE = 500;
+    const int THROW_ACTIVE_RANGE = 800;
     const int THROW_RECOVERY_HURTBOX = 400;
     const int WALK_F_SPEED = 135;
     const int WALK_B_SPEED = -100;
@@ -76,16 +76,18 @@ public class GameLoop : MonoBehaviour {
     const int FRAMES_END_ROUND_SPLASH = 180;
     const int FRAMES_COUNTDOWN = 30;
     const float FRAME_LENGTH = 0.016666666666f;
+    const int GAME_OVER_LENGTH = 99999;
 
     bool Initialized = false;
 
 
     // Use this for initialization
-    void Start () {
+    void Start() {
+        deltaTime = 0;
     }
-	
-	// Update is called once per frame
-	void Update() {
+
+    // Update is called once per frame
+    void Update() {
         deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
 
         m_timeSinceLastUpdate += deltaTime;
@@ -94,7 +96,7 @@ public class GameLoop : MonoBehaviour {
         else
             return;
 
-        if(!Initialized)
+        if (!Initialized)
         {
             Match = new MatchState();
             CurrentSplashState = new SplashState();
@@ -102,6 +104,17 @@ public class GameLoop : MonoBehaviour {
             Initialized = true;
         }
 
+        SinglePlayerInputs p1_inputs = GetInputs(true);
+        SinglePlayerInputs p2_inputs = GetInputs(false);
+        if (CurrentSplashState.CurrentState == SplashState.State.GameOver)
+        {
+            //check if any button is pressed to start a new game
+            if (p1_inputs.A || p1_inputs.B || p1_inputs.C || p1_inputs.Start ||
+                p2_inputs.A || p2_inputs.B || p2_inputs.C || p2_inputs.Start)
+            {
+                this.Initialized = false;
+            }
+        }
         if (UpdateSplashScreen())
         {
 
@@ -112,9 +125,7 @@ public class GameLoop : MonoBehaviour {
         }
         else
         {
-            //1. Checks for inputs
-            SinglePlayerInputs p1_inputs = GetInputs(true);
-            SinglePlayerInputs p2_inputs = GetInputs(false);
+            //1. Checks for inputs : done before
 
             //1.1 Check for pause? todo
 
@@ -147,6 +158,8 @@ public class GameLoop : MonoBehaviour {
     //returns whether or not to stop here and wait a few more frames
     public bool UpdateSplashScreen()
     {
+        
+
         //removing frames has to be done before checking the state as if the splash happens during gameplay it should still be rendered
         if (CurrentSplashState.FramesRemaining > 0)
             --CurrentSplashState.FramesRemaining;
@@ -155,10 +168,16 @@ public class GameLoop : MonoBehaviour {
             return false;
         if (CurrentSplashState.FramesRemaining == 0)
         {
-            switch(CurrentSplashState.CurrentState)
+            switch (CurrentSplashState.CurrentState)
             {
                 case SplashState.State.RoundOver_ShowResult:
-                    m_previousState = SetRoundStart();
+                    if(Match.GameOver)
+                    {
+                        CurrentSplashState.CurrentState = SplashState.State.GameOver;
+                        CurrentSplashState.FramesRemaining = GAME_OVER_LENGTH;
+                    }
+                    else
+                        m_previousState = SetRoundStart();
                     break;
                 case SplashState.State.RoundStart_3:
                     CurrentSplashState.CurrentState = SplashState.State.RoundStart_2;
@@ -176,6 +195,10 @@ public class GameLoop : MonoBehaviour {
                     CurrentSplashState.CurrentState = SplashState.State.None;
                     CurrentSplashState.FramesRemaining = FRAMES_COUNTDOWN;
                     break;
+                case SplashState.State.GameOver:
+                    Initialized = false;
+                    break;
+
             }
         }
         if (CurrentSplashState.CurrentState == SplashState.State.RoundStart_F)
@@ -183,60 +206,66 @@ public class GameLoop : MonoBehaviour {
         return true;
     }
 
-    //void OnGUI()
-    //{
-    //    float msec = deltaTime * 1000.0f;
-    //    float fps = 1.0f / deltaTime;
-    //    string fpstext = string.Format("{0:0.0} ms ({1:0.} fps)", msec, fps);
-    //    string output = "FPS : " + fpstext +
-    //        "\n\rP1 Current Action : " + m_previousState.P1_State.ToString() +
-    //        "\n\rP1 dir : " + m_p1LastInputs.JoystickDirection.ToString() +
-    //        "\n\rP1 A : " + m_p1LastInputs.A.ToString() +
-    //        "\n\rP1 B : " + m_p1LastInputs.B.ToString() +
-    //        "\n\rP1 X : " + Input.GetAxisRaw("Horizontal_PsStick1").ToString() +
-    //        "\n\rP1 Y : " + Input.GetAxisRaw("Vertical_PsStick1").ToString() +
-    //        "\n\rP2 Current Action : " + m_previousState.P2_State.ToString() +
-    //        "\n\rP2 dir : " + m_p2LastInputs.JoystickDirection.ToString() +
-    //        "\n\rP2 A : " + m_p2LastInputs.A.ToString() +
-    //        "\n\rP2 B : " + m_p2LastInputs.B.ToString() +
-    //        "\n\rP2 X : " + Input.GetAxisRaw("Horizontal_PsStick2").ToString() +
-    //        "\n\rP2 Y : " + Input.GetAxisRaw("Vertical_PsStick2").ToString();
-    //
-    //  
-    //
-    //    //string joystickdirs = "P2 dir : " + m_p2LastInputs.JoystickDirection.ToString() +
-    //    //    "\n\rP2 X : " + Input.GetAxisRaw("Horizontal_PsStick2").ToString();
-    //
-    //    //
-    //    string score = "\n\rP1 Score : " + Match.P1_Score.ToString() +
-    //        "\n\rP2 Score : " + Match.P2_Score.ToString() +
-    //        "\n\rTime : " + (m_previousState.RemainingTime / 60 ).ToString();
-    //
-    //
-    //    //string splash = CurrentSplashState.CurrentState.ToString() + CurrentSplashState.FramesRemaining.ToString();
-    //
-    //
-    //
-    //    GUI.TextArea(new Rect(10, 10, Screen.width - 10, Screen.height / 2), output + score);
-    //}
+    void OnGUI()
+    {
+        if (!Initialized)
+            return;
+        float msec = deltaTime * 1000.0f;
+        float fps = 1.0f / deltaTime;
+        string fpstext = string.Format("{0:0.0} ms ({1:0.} fps)", msec, fps);
+        //string output = "FPS : " + fpstext +
+        //    "\n\rP1 Current Action : " + m_previousState.P1_State.ToString() +
+        //    "\n\rP1 dir : " + m_p1LastInputs.JoystickDirection.ToString() +
+        //    "\n\rP1 A : " + m_p1LastInputs.A.ToString() +
+        //    "\n\rP1 B : " + m_p1LastInputs.B.ToString() +
+        //    "\n\rP1 X : " + Input.GetAxisRaw("Horizontal_PsStick1").ToString() +
+        //    "\n\rP1 Y : " + Input.GetAxisRaw("Vertical_PsStick1").ToString() +
+        //    "\n\rP2 Current Action : " + m_previousState.P2_State.ToString() +
+        //    "\n\rP2 dir : " + m_p2LastInputs.JoystickDirection.ToString() +
+        //    "\n\rP2 A : " + m_p2LastInputs.A.ToString() +
+        //    "\n\rP2 B : " + m_p2LastInputs.B.ToString() +
+        //    "\n\rP2 X : " + Input.GetAxisRaw("Horizontal_PsStick2").ToString() +
+        //    "\n\rP2 Y : " + Input.GetAxisRaw("Vertical_PsStick2").ToString();
+
+
+
+        //string joystickdirs = "P2 dir : " + m_p2LastInputs.JoystickDirection.ToString() +
+        //    "\n\rP2 X : " + Input.GetAxisRaw("Horizontal_PsStick2").ToString();
+
+        //
+        string score = "\n\rP1 Score : " + Match.P1_Score.ToString() +
+            "\n\rP2 Score : " + Match.P2_Score.ToString() +
+            "\n\rTime : " + (m_previousState.RemainingTime / 60).ToString();
+
+
+        //string splash = CurrentSplashState.CurrentState.ToString() + CurrentSplashState.FramesRemaining.ToString();
+
+
+
+        GUI.TextArea(new Rect(10, 10, Screen.width - 10, Screen.height / 5), score);
+    }
 
     private void HandleOutcome(MatchOutcome _outcome)
     {
-        if(_outcome.P1_Scores)
+        if (_outcome.P1_Scores)
         {
             Match.P1_Score++;
         }
-        if(_outcome.P2_Scores)
+        if (_outcome.P2_Scores)
         {
             Match.P2_Score++;
         }
         Match.Outcomes.Add(_outcome);
-        if(_outcome.Outcome == GameplayEnums.Outcome.TimeOut || _outcome.Outcome == GameplayEnums.Outcome.Trade)
+        if (_outcome.Outcome == GameplayEnums.Outcome.TimeOut || _outcome.Outcome == GameplayEnums.Outcome.Trade)
         {
             if (Match.P1_Score >= ROUNDS_TO_WIN)
                 Match.P1_Score = ROUNDS_TO_WIN - 1;
             if (Match.P2_Score >= ROUNDS_TO_WIN)
                 Match.P2_Score = ROUNDS_TO_WIN - 1;
+        }
+        if (Match.P1_Score >= ROUNDS_TO_WIN || Match.P2_Score >= ROUNDS_TO_WIN)
+        {
+            Match.GameOver = true;
         }
     }
 
@@ -618,7 +647,7 @@ public class GameLoop : MonoBehaviour {
                                 hg.HasStruck = true;
                             }
                         if (hg.HitboxType == GameplayEnums.HitboxType.Hitbox_Throw)
-                            if (DoHitboxesOverlap(hg, p2_hg, _currentState))
+                            if (DoHitboxesOverlap(hg, p2_hg, _currentState) && p2_hg.HitboxType == GameplayEnums.HitboxType.Hurtbox_Main)
                             {
                                 if (_currentState.P2_State == GameplayEnums.CharacterState.ThrowStartup)
                                     throwBreak = true;
@@ -667,7 +696,7 @@ public class GameLoop : MonoBehaviour {
                                 hg.HasStruck = true;
                             }
                         if (hg.HitboxType == GameplayEnums.HitboxType.Hitbox_Throw)
-                            if (DoHitboxesOverlap(p1_hg, hg, _currentState))
+                            if (DoHitboxesOverlap(p1_hg, hg, _currentState) && p1_hg.HitboxType == GameplayEnums.HitboxType.Hurtbox_Main)
                             {
                                 if (_currentState.P1_State == GameplayEnums.CharacterState.ThrowStartup)
                                     throwBreak = true;
