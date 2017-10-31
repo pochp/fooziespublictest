@@ -5,7 +5,7 @@ using System.Text;
 
 public class SplashState
 {
-    public enum State { RoundOver_ShowResult, RoundStart_3, RoundStart_2, RoundStart_1, RoundStart_F, None}
+    public enum State { RoundOver_ShowResult, RoundStart_3, RoundStart_2, RoundStart_1, RoundStart_F, GameOver, None}
     public State CurrentState;
     public int FramesRemaining;
 

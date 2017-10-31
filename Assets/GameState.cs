@@ -133,6 +133,7 @@ public class MatchState
     //public List<GameplayEnums.Outcome> P2_Outcomes;
 
     public List<MatchOutcome> Outcomes;
+    public bool GameOver;
 
     public MatchState()
     {
@@ -140,7 +141,7 @@ public class MatchState
         P2_Score = 0;
         //P1_Outcomes = new List<GameplayEnums.Outcome>();
         //P2_Outcomes = new List<GameplayEnums.Outcome>();
-
+        GameOver = false;
         Outcomes = new List<MatchOutcome>();
     }
 }

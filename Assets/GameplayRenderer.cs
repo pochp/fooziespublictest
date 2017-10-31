@@ -29,6 +29,8 @@ public class GameplayRenderer : MonoBehaviour {
     public Sprite TXT_Trade;
     public Sprite TXT_Timeout;
     public Sprite TXT_Throw;
+    public Sprite TXT_GameOver;
+    public Sprite TXT_AnyButton;
     
 
     private List<Hitbox_Render> m_activeHitboxes;
@@ -96,6 +98,10 @@ public class GameplayRenderer : MonoBehaviour {
                     break;
                 case SplashState.State.RoundStart_F:
                     m_spriteList.TXT_Foozies.Active = true;
+                    break;
+                case SplashState.State.GameOver:
+                    m_spriteList.TXT_GameOver.Active = true;
+                    m_spriteList.TXT_AnyButton.Active = true;
                     break;
             }
             //render what has to be rendered
@@ -346,6 +352,9 @@ public class SpriteList
     public SpriteRenderPair TXT_Trade;
     public SpriteRenderPair TXT_Timeout;
     public SpriteRenderPair TXT_Throw;
+    public SpriteRenderPair TXT_GameOver;
+    public SpriteRenderPair TXT_AnyButton;
+    
 
     public List<SpriteRenderPair> SplashSprites;
 
@@ -370,6 +379,8 @@ public class SpriteList
         TXT_Trade = SpriteRenderPair.CreateRenderPair(_gameplayRenderer.gameObject, _gameplayRenderer.TXT_Trade, ScreenBottom);
         TXT_Timeout = SpriteRenderPair.CreateRenderPair(_gameplayRenderer.gameObject, _gameplayRenderer.TXT_Timeout, ScreenBottom);
         TXT_Throw = SpriteRenderPair.CreateRenderPair(_gameplayRenderer.gameObject, _gameplayRenderer.TXT_Throw, ScreenBottom);
+        TXT_GameOver = SpriteRenderPair.CreateRenderPair(_gameplayRenderer.gameObject, _gameplayRenderer.TXT_GameOver, ScreenTop);
+        TXT_AnyButton = SpriteRenderPair.CreateRenderPair(_gameplayRenderer.gameObject, _gameplayRenderer.TXT_AnyButton, ScreenBottom);
 
         SplashSprites.Add(TXT_1);
         SplashSprites.Add(TXT_2);
@@ -386,5 +397,7 @@ public class SpriteList
         SplashSprites.Add(TXT_Trade);
         SplashSprites.Add(TXT_Timeout);
         SplashSprites.Add(TXT_Throw);
+        SplashSprites.Add(TXT_GameOver);
+        SplashSprites.Add(TXT_AnyButton);
     }
 }
