@@ -33,8 +33,8 @@ public class GameLoop : MonoBehaviour {
     /// </summary>
     /// 
 
-    const int ATTACK_STARTUP = 8;
-    const int ATTACK_ACTIVE = 4;
+    const int ATTACK_STARTUP = 7;
+    const int ATTACK_ACTIVE = 2;
     const int ATTACK_RECOVERY_TOTAL = 26;
     const int ATTACK_RECOVERY_SHORTEN = 10;
     const int HURTBOX_WHIFF_EARLY = 2000;
@@ -73,8 +73,8 @@ public class GameLoop : MonoBehaviour {
     /// <summary>
     /// TIME CONSTANTS
     /// </summary>
-    const int FRAMES_END_ROUND_SPLASH = 180;
-    const int FRAMES_COUNTDOWN = 30;
+    const int FRAMES_END_ROUND_SPLASH = 60;
+    const int FRAMES_COUNTDOWN = 10;
     const float FRAME_LENGTH = 0.016666666666f;
     const int GAME_OVER_LENGTH = 99999;
 
@@ -88,11 +88,11 @@ public class GameLoop : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
+        deltaTime = (Time.deltaTime);// - deltaTime);// * 0.1f;
 
         m_timeSinceLastUpdate += deltaTime;
         if (m_timeSinceLastUpdate > FRAME_LENGTH)
-            m_timeSinceLastUpdate = 0f;
+            m_timeSinceLastUpdate -= FRAME_LENGTH;
         else
             return;
 
@@ -212,7 +212,9 @@ public class GameLoop : MonoBehaviour {
             return;
         float msec = deltaTime * 1000.0f;
         float fps = 1.0f / deltaTime;
-        string fpstext = string.Format("{0:0.0} ms ({1:0.} fps)", msec, fps);
+        string fpstext = string.Format("\n\r{0:0.0} ms ({1:0.} fps)", msec, fps);
+        string clock = "\n\r" + System.DateTime.Now.Second.ToString();
+        string dtime = "\n\r" + Time.deltaTime.ToString();
         //string output = "FPS : " + fpstext +
         //    "\n\rP1 Current Action : " + m_previousState.P1_State.ToString() +
         //    "\n\rP1 dir : " + m_p1LastInputs.JoystickDirection.ToString() +
@@ -242,7 +244,7 @@ public class GameLoop : MonoBehaviour {
 
 
 
-        GUI.TextArea(new Rect(10, 10, Screen.width - 10, Screen.height / 5), score);
+        GUI.TextArea(new Rect(10, 10, Screen.width - 10, Screen.height / 2), score + fpstext + clock + dtime);
     }
 
     private void HandleOutcome(MatchOutcome _outcome)
