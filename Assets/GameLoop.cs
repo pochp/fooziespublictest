@@ -53,8 +53,8 @@ public class GameLoop : MonoBehaviour {
     const int THROW_STARTUP_HURTBOX = 400;
     const int THROW_ACTIVE_RANGE = 800;
     const int THROW_RECOVERY_HURTBOX = 400;
-    const int WALK_F_SPEED = 135;
-    const int WALK_B_SPEED = -100;
+    const int WALK_F_SPEED = 95;
+    const int WALK_B_SPEED = -70;
     const int ATTACK_HITSTOP = 5;
     const int ATTACK_BLOCKSTUN = 20;
     const int ATTACK_PUSHBACK_SPEED = -120;
