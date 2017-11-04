@@ -35,8 +35,8 @@ public class GameLoop : MonoBehaviour {
 
     const int ATTACK_STARTUP = 7;
     const int ATTACK_ACTIVE = 2;
-    const int ATTACK_RECOVERY_TOTAL = 26;
-    const int ATTACK_RECOVERY_SHORTEN = 10;
+    const int ATTACK_RECOVERY_TOTAL = 35;
+    const int ATTACK_RECOVERY_SHORTEN = 26;
     const int HURTBOX_WHIFF_EARLY = 2000;
     const int HURTBOX_WHIFF_LATE = 1000;
     const int HURTBOX_STARTUP = 1000;
@@ -53,8 +53,8 @@ public class GameLoop : MonoBehaviour {
     const int THROW_STARTUP_HURTBOX = 400;
     const int THROW_ACTIVE_RANGE = 800;
     const int THROW_RECOVERY_HURTBOX = 400;
-    const int WALK_F_SPEED = 95;
-    const int WALK_B_SPEED = -70;
+    const int WALK_F_SPEED = 65;
+    const int WALK_B_SPEED = -50;
     const int ATTACK_HITSTOP = 5;
     const int ATTACK_BLOCKSTUN = 20;
     const int ATTACK_PUSHBACK_SPEED = -120;
@@ -74,7 +74,7 @@ public class GameLoop : MonoBehaviour {
     /// TIME CONSTANTS
     /// </summary>
     const int FRAMES_END_ROUND_SPLASH = 60;
-    const int FRAMES_COUNTDOWN = 10;
+    const int FRAMES_COUNTDOWN = 20;
     const float FRAME_LENGTH = 0.016666666666f;
     const int GAME_OVER_LENGTH = 99999;
 
@@ -104,6 +104,9 @@ public class GameLoop : MonoBehaviour {
             Initialized = true;
         }
 
+        //1. Checks for inputs : done before
+
+        //1.1 Check for pause? todo
         SinglePlayerInputs p1_inputs = GetInputs(true);
         SinglePlayerInputs p2_inputs = GetInputs(false);
         if (CurrentSplashState.CurrentState == SplashState.State.GameOver)
@@ -125,9 +128,6 @@ public class GameLoop : MonoBehaviour {
         }
         else
         {
-            //1. Checks for inputs : done before
-
-            //1.1 Check for pause? todo
 
             //2. Sees if the inputs can be applied to current action
             GameState currentState = UpdateGameStateWithInputs(p1_inputs, p2_inputs, m_previousState);
@@ -742,6 +742,8 @@ public class GameLoop : MonoBehaviour {
                 _currentState.P2_StateFrames = 0;
                 //set hitstop
                 _currentState.RemainingHitstop = BLOCK_HITSTOP;
+                //give gauge
+                _currentState.P1_Gauge++;
             }
             else
             {
@@ -757,6 +759,8 @@ public class GameLoop : MonoBehaviour {
                 _currentState.P1_StateFrames = 0;
                 //set hitstop
                 _currentState.RemainingHitstop = BLOCK_HITSTOP;
+                //give gauge
+                _currentState.P2_Gauge++;
             }
             else
             {

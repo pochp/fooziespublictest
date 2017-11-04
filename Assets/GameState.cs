@@ -4,21 +4,128 @@ using UnityEngine;
 
 public class GameState {
 
-    public int P1_Position;
-    public int P2_Position;
-    public int P1_StateFrames;
-    public int P2_StateFrames;
-    public GameplayEnums.CharacterState P1_State;
-    public GameplayEnums.CharacterState P2_State;
-    public List<Hitbox_Gameplay> P1_Hitboxes;
-    public List<Hitbox_Gameplay> P2_Hitboxes;
-    public int P1_Gauge;
-    public int P2_Gauge;
+    public int P1_Position
+    {
+        get
+        {
+            return P1_CState.Position;
+        }
+        set
+        {
+            P1_CState.Position = value;
+        }
+    }
+    public int P2_Position
+    {
+        get
+        {
+            return P2_CState.Position;
+        }
+        set
+        {
+            P2_CState.Position = value;
+        }
+    }
+    public int P1_StateFrames
+    {
+        get
+        {
+            return P1_CState.StateFrames;
+        }
+        set
+        {
+            P1_CState.StateFrames = value;
+        }
+    }
+    public int P2_StateFrames
+    {
+        get
+        {
+            return P2_CState.StateFrames;
+        }
+        set
+        {
+            P2_CState.StateFrames = value;
+        }
+    }
+    public GameplayEnums.CharacterState P1_State
+    {
+        get
+        {
+            return P1_CState.State;
+        }
+        set
+        {
+            P1_CState.State = value;
+        }
+    }
+    public GameplayEnums.CharacterState P2_State
+    {
+        get
+        {
+            return P2_CState.State;
+        }
+        set
+        {
+            P2_CState.State = value;
+        }
+    }
+    public List<Hitbox_Gameplay> P1_Hitboxes
+    {
+        get
+        {
+            return P1_CState.Hitboxes;
+        }
+        set
+        {
+            P1_CState.Hitboxes = value;
+        }
+    }
+    public List<Hitbox_Gameplay> P2_Hitboxes
+    {
+        get
+        {
+            return P2_CState.Hitboxes;
+        }
+        set
+        {
+            P2_CState.Hitboxes = value;
+        }
+    }
+    public int P1_Gauge
+    {
+        get
+        {
+            return P1_CState.Gauge;
+        }
+        set
+        {
+            P1_CState.Gauge = value;
+        }
+    }
+    public int P2_Gauge
+    {
+        get
+        {
+            return P2_CState.Gauge;
+        }
+        set
+        {
+            P2_CState.Gauge = value;
+        }
+    }
     public int RemainingHitstop;
     public int RemainingTime;
 
+    public CharacterState P1_CState;
+    public CharacterState P2_CState;
+
     public GameState()
     {
+        P1_CState = new CharacterState();
+        P2_CState = new CharacterState();
+
+
         P1_Position = 0;
         P2_Position = 0;
         P1_StateFrames = 0;
@@ -35,6 +142,10 @@ public class GameState {
 
     public GameState(GameState _other)
     {
+        P1_CState = new CharacterState();
+        P2_CState = new CharacterState();
+
+
         P1_Position = _other.P1_Position;
         P2_Position = _other.P2_Position;
         P1_StateFrames = _other.P1_StateFrames;
