@@ -15,7 +15,7 @@ public abstract class Character
 
     protected Character()
     {
-        MaxGauge = 10;
+        MaxGauge = 4;
         MinCost = 2;
     }
 

@@ -661,7 +661,7 @@ public class GameLoop : MonoBehaviour {
                 //set hitstop
                 _currentState.RemainingHitstop = GameplayConstants.BLOCK_HITSTOP;
                 //give gauge
-                _currentState.P1_Gauge++;
+                _currentState.P1_CState.AddGauge(1);
             }
             else
             {
@@ -678,7 +678,7 @@ public class GameLoop : MonoBehaviour {
                 //set hitstop
                 _currentState.RemainingHitstop = GameplayConstants.BLOCK_HITSTOP;
                 //give gauge
-                _currentState.P2_Gauge++;
+                _currentState.P2_CState.AddGauge(1);
             }
             else
             {

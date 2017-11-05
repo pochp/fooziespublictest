@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GameplayRenderer : MonoBehaviour {
-    
+
+    public float CharacterHeight = 1.8f;
 
     public Material P1_Active;
     public Material P1_Character;
@@ -31,6 +32,7 @@ public class GameplayRenderer : MonoBehaviour {
     public Sprite TXT_Throw;
     public Sprite TXT_GameOver;
     public Sprite TXT_AnyButton;
+    public Sprite TXT_Feet;
     
 
     private List<Hitbox_Render> m_activeHitboxes;
@@ -39,6 +41,7 @@ public class GameplayRenderer : MonoBehaviour {
     private MatchState m_previousMatchState;
     private SplashState m_previousSplashState;
 
+    private GaugeRenderer GaugeRenderer;
 
     // Use this for initialization
     void Start()
@@ -52,6 +55,7 @@ public class GameplayRenderer : MonoBehaviour {
     private void InitSprites()
     {
         m_spriteList = new SpriteList(this);
+        GaugeRenderer = new GaugeRenderer(P1_Active, P1_Character);
     }
 
     public void RenderScene(GameState _gameState, MatchState _matchState, SplashState _splashState)
@@ -62,6 +66,7 @@ public class GameplayRenderer : MonoBehaviour {
         //2. Render Effects (hit sparks)
 
         //3. Render Score, Time, Gauges
+        GaugeRenderer.UpdateGaugeTransforms(_gameState);
 
         //4. Splash situations (match end, round end)
         RenderSplashSprites(_gameState, _matchState, _splashState);
@@ -212,14 +217,21 @@ public class GameplayRenderer : MonoBehaviour {
 
     private void ModifyHitbox(Hitbox_Render _renderBox, Hitbox_Gameplay _hbox_gameplay, bool _p1, GameState _gameState)
     {
-        float y = 1.8f;
+        float y = CharacterHeight;
+        float z = 1;
+        if (_hbox_gameplay.HitboxType == GameplayEnums.HitboxType.Hitbox_Attack)
+        {
+            y /= 2f;
+            z = 2;
+        }
+        
         Vector3 pos = GetInGamePosition(_hbox_gameplay, _p1, _gameState);
-        Vector3 scale = new Vector3(GameUnitsToUnityUnits(_hbox_gameplay.Width), y, 1f);
+        Vector3 scale = new Vector3(GameUnitsToUnityUnits(_hbox_gameplay.Width), y, z);
         _renderBox.ObjectInGame.transform.position = pos;
         _renderBox.ObjectInGame.transform.localScale = scale;
         if (_hbox_gameplay.AttackAttribute == GameplayEnums.AttackAttribute.Low)
         {
-            _renderBox.ObjectInGame.transform.position = pos - new Vector3(0, y / -2f);
+            _renderBox.ObjectInGame.transform.position = pos - new Vector3(0, y / 4f);
             _renderBox.ObjectInGame.transform.localScale = new Vector3(scale.x, scale.y / 2f);
         }
         _renderBox.StillExists = true;
@@ -367,6 +379,7 @@ public class SpriteList
     public SpriteRenderPair TXT_Throw;
     public SpriteRenderPair TXT_GameOver;
     public SpriteRenderPair TXT_AnyButton;
+    public SpriteRenderPair TXT_Feet;
     
 
     public List<SpriteRenderPair> SplashSprites;
@@ -394,6 +407,7 @@ public class SpriteList
         TXT_Throw = SpriteRenderPair.CreateRenderPair(_gameplayRenderer.gameObject, _gameplayRenderer.TXT_Throw, ScreenBottom);
         TXT_GameOver = SpriteRenderPair.CreateRenderPair(_gameplayRenderer.gameObject, _gameplayRenderer.TXT_GameOver, ScreenTop);
         TXT_AnyButton = SpriteRenderPair.CreateRenderPair(_gameplayRenderer.gameObject, _gameplayRenderer.TXT_AnyButton, ScreenBottom);
+        TXT_Feet = SpriteRenderPair.CreateRenderPair(_gameplayRenderer.gameObject, _gameplayRenderer.TXT_Feet, ScreenBottom);
 
         SplashSprites.Add(TXT_1);
         SplashSprites.Add(TXT_2);
@@ -412,5 +426,6 @@ public class SpriteList
         SplashSprites.Add(TXT_Throw);
         SplashSprites.Add(TXT_GameOver);
         SplashSprites.Add(TXT_AnyButton);
+        SplashSprites.Add(TXT_Feet);
     }
 }

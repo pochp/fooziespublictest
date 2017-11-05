@@ -7,7 +7,7 @@ public class Sweep : Character
 {
     const int STARTUP = 12;
     const int ACTIVE = 3;
-    const int RECOVERY = 50;
+    const int RECOVERY = 60;
 
     const int ATTACK_RECOVERY_SHORTEN = 35;
     const int HURTBOX_WHIFF_EARLY = 2800;
