@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using FooziesConstants;
 
 
 /// <summary>
@@ -28,55 +29,7 @@ public class GameLoop : MonoBehaviour {
     SinglePlayerInputs m_p2LastInputs;
     SplashState CurrentSplashState;
 
-    /// <summary>
-    /// GAMEPLAY CONSTANTS
-    /// </summary>
-    /// 
 
-    const int ATTACK_STARTUP = 7;
-    const int ATTACK_ACTIVE = 2;
-    const int ATTACK_RECOVERY_TOTAL = 26;
-    const int ATTACK_RECOVERY_SHORTEN = 10;
-    const int HURTBOX_WHIFF_EARLY = 2000;
-    const int HURTBOX_WHIFF_LATE = 1000;
-    const int HURTBOX_STARTUP = 1000;
-    const int HURTBOX_ACTIVE = 1500; //hurtbox when active is shorter than the recovery so it favorises clashes
-    const int HITBOX_ACTIVE = 2200;
-    const int CHARACTER_HURTBOX_WIDTH = 500;
-    const int CHARACTER_HURTBOX_HEIGHT = 2500;
-    const int CROUCHING_HURTBOX_WIDTH = 600;
-    const int CROUCHING_HURTBOX_HEIGHT = 1000;
-    const int THROW_STARTUP = 3;
-    const int THROW_ACTIVE = 2;
-    const int THROW_RECOVERY = 30;
-    const int THROW_BREAK_WINDOW = 5;
-    const int THROW_STARTUP_HURTBOX = 400;
-    const int THROW_ACTIVE_RANGE = 800;
-    const int THROW_RECOVERY_HURTBOX = 400;
-    const int WALK_F_SPEED = 95;
-    const int WALK_B_SPEED = -70;
-    const int ATTACK_HITSTOP = 5;
-    const int ATTACK_BLOCKSTUN = 20;
-    const int ATTACK_PUSHBACK_SPEED = -120;
-    const int ATTACK_PUSHBACK_DURATION = 5;
-    const int BREAK_DURATION = 15;
-    const int BREAK_PUSHBACK = -120;
-    const int CLASH_PUSHBACK_SPEED = -150;
-    const int CLASH_PUSHBACK_DURATION = 10;
-    const int CLASH_HITSTOP = 20;
-    const int BLOCK_HITSTOP = 10;
-    const int STARTING_POSITION = 5000;
-    const int FRAMES_PER_ROUND = 1800; //30 seconds
-    const int ARENA_RADIUS = 8700;
-    const int ROUNDS_TO_WIN = 5;
-
-    /// <summary>
-    /// TIME CONSTANTS
-    /// </summary>
-    const int FRAMES_END_ROUND_SPLASH = 60;
-    const int FRAMES_COUNTDOWN = 10;
-    const float FRAME_LENGTH = 0.016666666666f;
-    const int GAME_OVER_LENGTH = 99999;
 
     bool Initialized = false;
 
@@ -91,8 +44,8 @@ public class GameLoop : MonoBehaviour {
         deltaTime = (Time.deltaTime);// - deltaTime);// * 0.1f;
 
         m_timeSinceLastUpdate += deltaTime;
-        if (m_timeSinceLastUpdate > FRAME_LENGTH)
-            m_timeSinceLastUpdate -= FRAME_LENGTH;
+        if (m_timeSinceLastUpdate > GameplayConstants.FRAME_LENGTH)
+            m_timeSinceLastUpdate -= GameplayConstants.FRAME_LENGTH;
         else
             return;
 
@@ -100,10 +53,14 @@ public class GameLoop : MonoBehaviour {
         {
             Match = new MatchState();
             CurrentSplashState = new SplashState();
+            m_previousState = new GameState();
             m_previousState = SetRoundStart();
             Initialized = true;
         }
 
+        //1. Checks for inputs : done before
+
+        //1.1 Check for pause? todo
         SinglePlayerInputs p1_inputs = GetInputs(true);
         SinglePlayerInputs p2_inputs = GetInputs(false);
         if (CurrentSplashState.CurrentState == SplashState.State.GameOver)
@@ -125,9 +82,6 @@ public class GameLoop : MonoBehaviour {
         }
         else
         {
-            //1. Checks for inputs : done before
-
-            //1.1 Check for pause? todo
 
             //2. Sees if the inputs can be applied to current action
             GameState currentState = UpdateGameStateWithInputs(p1_inputs, p2_inputs, m_previousState);
@@ -144,7 +98,7 @@ public class GameLoop : MonoBehaviour {
             {
                 HandleOutcome(outcome);
                 CurrentSplashState.CurrentState = SplashState.State.RoundOver_ShowResult;
-                CurrentSplashState.FramesRemaining = FRAMES_END_ROUND_SPLASH;
+                CurrentSplashState.FramesRemaining = GameplayConstants.FRAMES_END_ROUND_SPLASH;
             }
             --currentState.RemainingTime;
             m_previousState = currentState;
@@ -174,26 +128,26 @@ public class GameLoop : MonoBehaviour {
                     if(Match.GameOver)
                     {
                         CurrentSplashState.CurrentState = SplashState.State.GameOver;
-                        CurrentSplashState.FramesRemaining = GAME_OVER_LENGTH;
+                        CurrentSplashState.FramesRemaining = GameplayConstants.GAME_OVER_LENGTH;
                     }
                     else
                         m_previousState = SetRoundStart();
                     break;
                 case SplashState.State.RoundStart_3:
                     CurrentSplashState.CurrentState = SplashState.State.RoundStart_2;
-                    CurrentSplashState.FramesRemaining = FRAMES_COUNTDOWN;
+                    CurrentSplashState.FramesRemaining = GameplayConstants.FRAMES_COUNTDOWN;
                     break;
                 case SplashState.State.RoundStart_2:
                     CurrentSplashState.CurrentState = SplashState.State.RoundStart_1;
-                    CurrentSplashState.FramesRemaining = FRAMES_COUNTDOWN;
+                    CurrentSplashState.FramesRemaining = GameplayConstants.FRAMES_COUNTDOWN;
                     break;
                 case SplashState.State.RoundStart_1:
                     CurrentSplashState.CurrentState = SplashState.State.RoundStart_F;
-                    CurrentSplashState.FramesRemaining = FRAMES_COUNTDOWN;
+                    CurrentSplashState.FramesRemaining = GameplayConstants.FRAMES_COUNTDOWN;
                     break;
                 case SplashState.State.RoundStart_F:
                     CurrentSplashState.CurrentState = SplashState.State.None;
-                    CurrentSplashState.FramesRemaining = FRAMES_COUNTDOWN;
+                    CurrentSplashState.FramesRemaining = GameplayConstants.FRAMES_COUNTDOWN;
                     break;
                 case SplashState.State.GameOver:
                     Initialized = false;
@@ -229,7 +183,10 @@ public class GameLoop : MonoBehaviour {
         //    "\n\rP2 X : " + Input.GetAxisRaw("Horizontal_PsStick2").ToString() +
         //    "\n\rP2 Y : " + Input.GetAxisRaw("Vertical_PsStick2").ToString();
 
-
+        string sweepdebug = "P1 Gauge : " + m_previousState.P1_Gauge.ToString() + "/" + m_previousState.P1_CState.SelectedCharacter.MaxGauge.ToString() +
+            "\n\rP1 Current Action : " + m_previousState.P1_State.ToString() +
+            "\n\rP1 StateFrames : " + m_previousState.P1_CState.StateFrames.ToString() +
+            "\n\rP1 SweepState : " + (m_previousState.P1_CState.SelectedCharacter as Sweep).State.ToString();
 
         //string joystickdirs = "P2 dir : " + m_p2LastInputs.JoystickDirection.ToString() +
         //    "\n\rP2 X : " + Input.GetAxisRaw("Horizontal_PsStick2").ToString();
@@ -244,7 +201,7 @@ public class GameLoop : MonoBehaviour {
 
 
 
-        GUI.TextArea(new Rect(10, 10, Screen.width - 10, Screen.height / 2), score + fpstext + clock + dtime);
+        GUI.TextArea(new Rect(10, 10, Screen.width - 10, Screen.height / 2), score + sweepdebug);
     }
 
     private void HandleOutcome(MatchOutcome _outcome)
@@ -260,12 +217,12 @@ public class GameLoop : MonoBehaviour {
         Match.Outcomes.Add(_outcome);
         if (_outcome.Outcome == GameplayEnums.Outcome.TimeOut || _outcome.Outcome == GameplayEnums.Outcome.Trade)
         {
-            if (Match.P1_Score >= ROUNDS_TO_WIN)
-                Match.P1_Score = ROUNDS_TO_WIN - 1;
-            if (Match.P2_Score >= ROUNDS_TO_WIN)
-                Match.P2_Score = ROUNDS_TO_WIN - 1;
+            if (Match.P1_Score >= GameplayConstants.ROUNDS_TO_WIN)
+                Match.P1_Score = GameplayConstants.ROUNDS_TO_WIN - 1;
+            if (Match.P2_Score >= GameplayConstants.ROUNDS_TO_WIN)
+                Match.P2_Score = GameplayConstants.ROUNDS_TO_WIN - 1;
         }
-        if (Match.P1_Score >= ROUNDS_TO_WIN || Match.P2_Score >= ROUNDS_TO_WIN)
+        if (Match.P1_Score >= GameplayConstants.ROUNDS_TO_WIN || Match.P2_Score >= GameplayConstants.ROUNDS_TO_WIN)
         {
             Match.GameOver = true;
         }
@@ -274,24 +231,24 @@ public class GameLoop : MonoBehaviour {
     private GameState SetRoundStart()
     {
         CurrentSplashState.CurrentState = SplashState.State.RoundStart_3;
-        CurrentSplashState.FramesRemaining = FRAMES_COUNTDOWN;
+        CurrentSplashState.FramesRemaining = GameplayConstants.FRAMES_COUNTDOWN;
 
         GameState state = new GameState();
 
-        state.P1_Gauge = 0;
+        state.P1_Gauge = m_previousState.P1_Gauge;
         state.P1_Hitboxes.Add(CreateCharacterStartingHitbox());
-        state.P1_Position = STARTING_POSITION * -1;
+        state.P1_Position = GameplayConstants.STARTING_POSITION * -1;
         state.P1_State = GameplayEnums.CharacterState.Idle;
         state.P1_StateFrames = 0;
 
-        state.P2_Gauge = 0;
+        state.P2_Gauge = m_previousState.P2_Gauge;
         state.P2_Hitboxes.Add(CreateCharacterStartingHitbox());
-        state.P2_Position = STARTING_POSITION;
+        state.P2_Position = GameplayConstants.STARTING_POSITION;
         state.P2_State = GameplayEnums.CharacterState.Idle;
         state.P2_StateFrames = 0;
 
         state.RemainingHitstop = 0;
-        state.RemainingTime = FRAMES_PER_ROUND;
+        state.RemainingTime = GameplayConstants.FRAMES_PER_ROUND;
 
 
         m_p1LastInputs = new SinglePlayerInputs();
@@ -304,7 +261,7 @@ public class GameLoop : MonoBehaviour {
 
     private Hitbox_Gameplay CreateCharacterStartingHitbox()
     {
-        Hitbox_Gameplay hbox = new Hitbox_Gameplay(GameplayEnums.HitboxType.Hurtbox_Main, 0, CHARACTER_HURTBOX_WIDTH);
+        Hitbox_Gameplay hbox = new Hitbox_Gameplay(GameplayEnums.HitboxType.Hurtbox_Main, 0, GameplayConstants.CHARACTER_HURTBOX_WIDTH);
         return hbox;
     }
 
@@ -438,7 +395,7 @@ public class GameLoop : MonoBehaviour {
             case GameplayEnums.CharacterState.Idle:
             case GameplayEnums.CharacterState.WalkBack:
             case GameplayEnums.CharacterState.WalkForward:
-                SetCharacterState( GetCharacterAction(_p1Inputs, m_p1LastInputs), true, updatedState);
+                updatedState.P1_CState.SetCharacterState( GetCharacterAction(_p1Inputs, m_p1LastInputs));
                 break;
             case GameplayEnums.CharacterState.BeingThrown:
                 if (_p1Inputs.B && !m_p1LastInputs.B)
@@ -462,7 +419,7 @@ public class GameLoop : MonoBehaviour {
             case GameplayEnums.CharacterState.Idle:
             case GameplayEnums.CharacterState.WalkBack:
             case GameplayEnums.CharacterState.WalkForward:
-                SetCharacterState(GetCharacterAction(_p2Inputs, m_p2LastInputs), false, updatedState);
+                updatedState.P2_CState.SetCharacterState(GetCharacterAction(_p2Inputs, m_p2LastInputs));
                 break;
             case GameplayEnums.CharacterState.BeingThrown:
                 if (_p2Inputs.B && !m_p2LastInputs.B)
@@ -483,51 +440,12 @@ public class GameLoop : MonoBehaviour {
         return updatedState;
     }
 
-    private void SetCharacterState(GameplayEnums.CharacterState _state, bool _p1, GameState _currentState)
-    {
-        List<Hitbox_Gameplay> _hboxes;
-        if (_p1)
-        {
-            _hboxes = _currentState.P1_Hitboxes;
-            _currentState.P1_State = _state;
-            _currentState.P1_StateFrames = 0;
-        }
-        else
-        {
-            _hboxes = _currentState.P2_Hitboxes;
-            _currentState.P2_State = _state;
-            _currentState.P2_StateFrames = 0;
-        }
-        switch (_state)
-        {
-            case GameplayEnums.CharacterState.AttackStartup:
-                _hboxes.Add(CreateHitbox(GameplayEnums.HitboxType.Hurtbox_Limb, _p1, HURTBOX_STARTUP));
-                SetCharacterHurtboxStanding(_hboxes);
-                break;
-            case GameplayEnums.CharacterState.SpecialStartup:
-                _hboxes.Add(CreateHitbox(GameplayEnums.HitboxType.Hurtbox_Limb, _p1, HURTBOX_STARTUP));
-                SetCharacterHurtboxStanding(_hboxes);
-                break;
-            case GameplayEnums.CharacterState.ThrowStartup:
-                _hboxes.Add(CreateHitbox(GameplayEnums.HitboxType.Hurtbox_Limb, _p1, THROW_STARTUP_HURTBOX));
-                SetCharacterHurtboxStanding(_hboxes);
-                break;
-            case GameplayEnums.CharacterState.WalkBack:
-            case GameplayEnums.CharacterState.WalkForward:
-            case GameplayEnums.CharacterState.Idle:
-                SetCharacterHurtboxStanding(_hboxes);
-                break;
-            case GameplayEnums.CharacterState.Crouch:
-                SetCharacterHurtboxCrouching(_hboxes);
-                break;
-        }
-    }
     
     private GameplayEnums.CharacterState GetCharacterAction(SinglePlayerInputs _inputs, SinglePlayerInputs _previousInputs)
     {
         if(_inputs.C && !_previousInputs.C)
         {
-            return GameplayEnums.CharacterState.SpecialStartup;
+            return GameplayEnums.CharacterState.Special;
         }
         if(_inputs.B && !_previousInputs.B)
         {
@@ -556,10 +474,10 @@ public class GameLoop : MonoBehaviour {
     private MatchOutcome ResolveActions(SinglePlayerInputs _p1Inputs, SinglePlayerInputs _p2Inputs, GameState _currentState)
     {
         //1. Update individual actions and positions
-        MatchOutcome p1_update_outcome = UpdateSinglePlayerActions(_currentState, true);
+        MatchOutcome p1_update_outcome = _currentState.P1_CState.UpdateCharacterState();
         if (p1_update_outcome.IsEnd())
             return p1_update_outcome;
-        MatchOutcome p2_update_outcome = UpdateSinglePlayerActions(_currentState, false);
+        MatchOutcome p2_update_outcome = _currentState.P2_CState.UpdateCharacterState();
         if (p2_update_outcome.IsEnd())
             return p2_update_outcome;
 
@@ -596,9 +514,9 @@ public class GameLoop : MonoBehaviour {
 
         //2. if either character extends beyond the edge, push him out of the corner.
         //2.1 if this causes characters to overlap, push the other character back
-        if (_currentState.P1_Position < ARENA_RADIUS * -1)
+        if (_currentState.P1_Position < GameplayConstants.ARENA_RADIUS * -1)
         {
-            _currentState.P1_Position -= ARENA_RADIUS + _currentState.P1_Position;
+            _currentState.P1_Position -= GameplayConstants.ARENA_RADIUS + _currentState.P1_Position;
             if (DoHitboxesOverlap(p1, p2, _currentState))
             {
                 int overlapAmount = (_currentState.P1_Position + p1.Position + p1.Width / 2) - (_currentState.P2_Position + p2.Position + p2.Width / 2);
@@ -608,9 +526,9 @@ public class GameLoop : MonoBehaviour {
                 }
             }
         }
-        if(_currentState.P2_Position > ARENA_RADIUS)
+        if(_currentState.P2_Position > GameplayConstants.ARENA_RADIUS)
         {
-            _currentState.P2_Position -= _currentState.P2_Position - ARENA_RADIUS;
+            _currentState.P2_Position -= _currentState.P2_Position - GameplayConstants.ARENA_RADIUS;
             if (DoHitboxesOverlap(p1, p2, _currentState))
             {
                 int overlapAmount = (_currentState.P1_Position + p1.Position + p1.Width / 2) - (_currentState.P2_Position + p2.Position + p2.Width / 2);
@@ -741,7 +659,9 @@ public class GameLoop : MonoBehaviour {
                 _currentState.P2_State = GameplayEnums.CharacterState.Blockstun;
                 _currentState.P2_StateFrames = 0;
                 //set hitstop
-                _currentState.RemainingHitstop = BLOCK_HITSTOP;
+                _currentState.RemainingHitstop = GameplayConstants.BLOCK_HITSTOP;
+                //give gauge
+                _currentState.P1_Gauge++;
             }
             else
             {
@@ -756,7 +676,9 @@ public class GameLoop : MonoBehaviour {
                 _currentState.P1_State = GameplayEnums.CharacterState.Blockstun;
                 _currentState.P1_StateFrames = 0;
                 //set hitstop
-                _currentState.RemainingHitstop = BLOCK_HITSTOP;
+                _currentState.RemainingHitstop = GameplayConstants.BLOCK_HITSTOP;
+                //give gauge
+                _currentState.P2_Gauge++;
             }
             else
             {
@@ -767,9 +689,9 @@ public class GameLoop : MonoBehaviour {
         if (p1_is_hit && p2_is_hit)
             res = new MatchOutcome(true, true, GameplayEnums.Outcome.Trade);
         else if (p1_is_hit)
-            res = new MatchOutcome(false, true, GetOutcomeFromOpponentState(_currentState.P1_State));
+            res = new MatchOutcome(false, true, GetOutcomeFromOpponentState(_currentState.P1_CState));
         else if (p2_is_hit)
-            res = new MatchOutcome(true, false, GetOutcomeFromOpponentState(_currentState.P2_State));
+            res = new MatchOutcome(true, false, GetOutcomeFromOpponentState(_currentState.P2_CState));
         else if ((p2_throws_p1 && p1_throws_p2) || throwBreak)
         {
             _currentState.P2_State = GameplayEnums.CharacterState.ThrowBreak;
@@ -823,37 +745,51 @@ public class GameLoop : MonoBehaviour {
         if (!(_inputs.JoystickDirection == 1 || _inputs.JoystickDirection == 4 || _inputs.JoystickDirection == 7))
             return false;
         GameplayEnums.CharacterState charState;
-        if(_p1)
+
+        Hitbox_Gameplay hitbox = _currentState.P1_CState.Hitboxes.Find(o => o.HitboxType == GameplayEnums.HitboxType.Hitbox_Attack);
+        if (_p1)
         {
             charState = _currentState.P1_State;
+            hitbox = _currentState.P2_CState.Hitboxes.Find(o => o.HitboxType == GameplayEnums.HitboxType.Hitbox_Attack);
         }
         else
         {
             charState = _currentState.P2_State;
+            hitbox = _currentState.P1_CState.Hitboxes.Find(o => o.HitboxType == GameplayEnums.HitboxType.Hitbox_Attack);
         }
         if(charState == GameplayEnums.CharacterState.Crouch || charState == GameplayEnums.CharacterState.Idle || charState == GameplayEnums.CharacterState.WalkBack)
         {
+            switch(hitbox.AttackAttribute)
+            {
+                case GameplayEnums.AttackAttribute.High:
+                    if ((_inputs.JoystickDirection == 1 || _inputs.JoystickDirection == 2 || _inputs.JoystickDirection == 3))
+                        return false;
+                    break;
+                case GameplayEnums.AttackAttribute.Low:
+                    if (!(_inputs.JoystickDirection == 1 || _inputs.JoystickDirection == 2 || _inputs.JoystickDirection == 3))
+                        return false;
+                    break;
+            }
             return true;
         }
         return false;
     }
 
-    private GameplayEnums.Outcome GetOutcomeFromOpponentState(GameplayEnums.CharacterState _opponentState)
+    private GameplayEnums.Outcome GetOutcomeFromOpponentState(CharacterState _charState)
     {
-       switch(_opponentState)
+       switch(_charState.State)
         {
             case GameplayEnums.CharacterState.AttackActive:
             case GameplayEnums.CharacterState.AttackStartup:
-            case GameplayEnums.CharacterState.SpecialActive:
-            case GameplayEnums.CharacterState.SpecialStartup:
             case GameplayEnums.CharacterState.ThrowActive:
             case GameplayEnums.CharacterState.ThrowStartup:
                 return GameplayEnums.Outcome.Counter;
             case GameplayEnums.CharacterState.AttackRecovery:
-            case GameplayEnums.CharacterState.SpecialRecovery:
                 return GameplayEnums.Outcome.WhiffPunish;
             case GameplayEnums.CharacterState.ThrowRecovery:
                 return GameplayEnums.Outcome.Shimmy;
+            case GameplayEnums.CharacterState.Special:
+                return _charState.SelectedCharacter.GetOutcomeIfHit();
             default:
                 return GameplayEnums.Outcome.StrayHit;
         }
@@ -872,208 +808,9 @@ public class GameLoop : MonoBehaviour {
             return false;
         return true;
     }
+    
 
-    private MatchOutcome UpdateSinglePlayerActions(GameState _currentState, bool _p1)
-    {
-        GameplayEnums.CharacterState currentPlayerState;
-        int stateFrames;
-        List<Hitbox_Gameplay> hitboxes;
-        int positionOffset = 0;
-        if(_p1)
-        {
-            currentPlayerState = _currentState.P1_State;
-            stateFrames = _currentState.P1_StateFrames;
-            hitboxes = _currentState.P1_Hitboxes;
-        }
-        else
-        {
-            currentPlayerState = _currentState.P2_State;
-            stateFrames = _currentState.P2_StateFrames;
-            hitboxes = _currentState.P2_Hitboxes;
-        }
-        ++stateFrames;
-        switch (currentPlayerState)
-        {
-            case GameplayEnums.CharacterState.AttackActive:
-                if (stateFrames > ATTACK_ACTIVE)
-                {
-                    currentPlayerState = GameplayEnums.CharacterState.AttackRecovery;
-                    stateFrames = 0;
-                    hitboxes.RemoveAll(o => o.HitboxType == GameplayEnums.HitboxType.Hitbox_Attack);
-                    ModifyLimbHitbox(hitboxes, _p1, HURTBOX_WHIFF_EARLY);
-                }
-                break;
-            case GameplayEnums.CharacterState.AttackRecovery:
-                if(stateFrames > ATTACK_RECOVERY_TOTAL)
-                {
-                    currentPlayerState = GameplayEnums.CharacterState.Idle;
-                    stateFrames = 0;
-                    hitboxes.RemoveAll(o => o.HitboxType == GameplayEnums.HitboxType.Hurtbox_Limb);
-                }
-                if(stateFrames == ATTACK_RECOVERY_SHORTEN)
-                {
-                    ModifyLimbHitbox(hitboxes, _p1, HURTBOX_WHIFF_LATE);
-                }
-                break;
-            case GameplayEnums.CharacterState.AttackStartup:
-                SetCharacterHurtboxStanding(hitboxes);
-                if (stateFrames > ATTACK_STARTUP)
-                {
-                    currentPlayerState = GameplayEnums.CharacterState.AttackActive;
-                    stateFrames = 0;
-                    hitboxes.Add(CreateHitbox(GameplayEnums.HitboxType.Hitbox_Attack, _p1, HITBOX_ACTIVE));
-                    ModifyLimbHitbox(hitboxes, _p1, HURTBOX_ACTIVE);
-                }
-                break;
-            case GameplayEnums.CharacterState.BeingThrown:
-                SetCharacterHurtboxStanding(hitboxes);
-                if(stateFrames > THROW_BREAK_WINDOW)
-                {
-                    if (_p1)
-                        return new MatchOutcome(false, true, GameplayEnums.Outcome.Throw);
-                    else
-                        return new MatchOutcome(true, false, GameplayEnums.Outcome.Throw);
-                }
-                break;//this is handled in checking if a player wins
-            case GameplayEnums.CharacterState.Blockstun:
-                SetCharacterHurtboxStanding(hitboxes);
-                if (stateFrames < ATTACK_PUSHBACK_DURATION)
-                {
-                    positionOffset = ATTACK_PUSHBACK_SPEED;
-                }
-                if(stateFrames > ATTACK_BLOCKSTUN)
-                {
-                    currentPlayerState = GameplayEnums.CharacterState.Idle;
-                    stateFrames = 0;
-                }
-                break;
-            case GameplayEnums.CharacterState.Clash:
-                if(stateFrames > CLASH_PUSHBACK_DURATION)
-                {
-                    currentPlayerState = GameplayEnums.CharacterState.Idle;
-                    stateFrames = 0;
-                }
-                positionOffset = CLASH_PUSHBACK_SPEED;
-                break;
-            case GameplayEnums.CharacterState.Crouch:
-                SetCharacterHurtboxCrouching(hitboxes);
-                break;
-            case GameplayEnums.CharacterState.Idle:
-                SetCharacterHurtboxStanding(hitboxes);
-                break;
-            case GameplayEnums.CharacterState.Inactive:
-                throw new System.Exception("character state was inactive. not supposed to happen???");
-            case GameplayEnums.CharacterState.SpecialActive:
-            case GameplayEnums.CharacterState.SpecialRecovery:
-            case GameplayEnums.CharacterState.SpecialStartup:
-                throw new System.Exception("character state was special. not implemented yet");
-            case GameplayEnums.CharacterState.ThrowActive:
-                if(stateFrames > THROW_ACTIVE)
-                {
-                    currentPlayerState = GameplayEnums.CharacterState.ThrowRecovery;
-                    stateFrames = 0;
-                    hitboxes.RemoveAll(o => o.HitboxType == GameplayEnums.HitboxType.Hitbox_Throw);
-                    ModifyLimbHitbox(hitboxes, _p1, THROW_RECOVERY_HURTBOX);
-                }
-                break;
-            case GameplayEnums.CharacterState.ThrowBreak:
-                if(stateFrames > BREAK_DURATION)
-                {
-                    currentPlayerState = GameplayEnums.CharacterState.Idle;
-                    stateFrames = 0;
-                }
-                positionOffset = BREAK_PUSHBACK;
-                break;
-            case GameplayEnums.CharacterState.ThrowingOpponent:
-                if (stateFrames > THROW_BREAK_WINDOW)
-                {
-                    if (_p1)
-                        return new MatchOutcome(true, false, GameplayEnums.Outcome.Throw);
-                    else
-                        return new MatchOutcome(false, true, GameplayEnums.Outcome.Throw);
-                }
-                break;//this is handled in checking if a player wins
-            case GameplayEnums.CharacterState.ThrowRecovery:
-                if (stateFrames > THROW_RECOVERY)
-                {
-                    currentPlayerState = GameplayEnums.CharacterState.Idle;
-                    stateFrames = 0;
-                    hitboxes.RemoveAll(o => o.HitboxType == GameplayEnums.HitboxType.Hurtbox_Limb);
-                }
-                break;
-            case GameplayEnums.CharacterState.ThrowStartup:
-                SetCharacterHurtboxStanding(hitboxes);
-                if (stateFrames > THROW_STARTUP)
-                {
-                    currentPlayerState = GameplayEnums.CharacterState.ThrowActive;
-                    stateFrames = 0;
-                    hitboxes.Add(CreateHitbox(GameplayEnums.HitboxType.Hitbox_Throw, _p1, THROW_ACTIVE_RANGE));
-                    ModifyLimbHitbox(hitboxes, _p1, THROW_STARTUP_HURTBOX);
-                }
-                break;
-            case GameplayEnums.CharacterState.WalkBack:
-                SetCharacterHurtboxStanding(hitboxes);
-                positionOffset = WALK_B_SPEED;
-                break;
-            case GameplayEnums.CharacterState.WalkForward:
-                SetCharacterHurtboxStanding(hitboxes);
-                positionOffset = WALK_F_SPEED;
-                break;
-            default:
-                throw new System.Exception("Ooops looks like I forgot to handle state : " + currentPlayerState.ToString());
-        }
-        if (_p1)
-        {
-            _currentState.P1_State = currentPlayerState;
-            _currentState.P1_StateFrames = stateFrames;
-            _currentState.P1_Position += positionOffset;
-        }
-        else
-        {
-            _currentState.P2_State = currentPlayerState;
-            _currentState.P2_StateFrames = stateFrames;
-            _currentState.P2_Position -= positionOffset;
-        }
-        return new MatchOutcome();
-    }
-
-    private Hitbox_Gameplay CreateHitbox(GameplayEnums.HitboxType _boxType, bool _p1, int _width)
-    {
-        Hitbox_Gameplay box = new Hitbox_Gameplay();
-        box.HitboxType = _boxType;
-        box.Width = _width;
-        if(_p1)
-            box.Position = CHARACTER_HURTBOX_WIDTH / 2 + _width / 2;
-        else
-            box.Position = CHARACTER_HURTBOX_WIDTH / -2 - _width / 2;
-        return box;
-    }
-
-    private void ModifyLimbHitbox(List<Hitbox_Gameplay> _hitboxes, bool _p1, int _length)
-    {
-        Hitbox_Gameplay hbox = _hitboxes.Find(o => o.HitboxType == GameplayEnums.HitboxType.Hurtbox_Limb);
-        hbox.Width = _length;
-        if(_p1)
-        {
-            hbox.Position = CHARACTER_HURTBOX_WIDTH / 2 + _length / 2;
-        }
-        else
-        {
-            hbox.Position = CHARACTER_HURTBOX_WIDTH / 2 - _length / 2;
-        }
-    }
-
-    private void SetCharacterHurtboxStanding(List<Hitbox_Gameplay> _hitboxes)
-    {
-        Hitbox_Gameplay hbox = _hitboxes.Find(o => o.HitboxType == GameplayEnums.HitboxType.Hurtbox_Main);
-        hbox.Width = CHARACTER_HURTBOX_WIDTH;
-    }
-
-    private void SetCharacterHurtboxCrouching(List<Hitbox_Gameplay> _hitboxes)
-    {
-        Hitbox_Gameplay hbox = _hitboxes.Find(o => o.HitboxType == GameplayEnums.HitboxType.Hurtbox_Main);
-        hbox.Width = CROUCHING_HURTBOX_WIDTH;
-    }
+    
 }
 
 public class SinglePlayerInputs

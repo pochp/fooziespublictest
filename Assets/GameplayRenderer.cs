@@ -212,8 +212,16 @@ public class GameplayRenderer : MonoBehaviour {
 
     private void ModifyHitbox(Hitbox_Render _renderBox, Hitbox_Gameplay _hbox_gameplay, bool _p1, GameState _gameState)
     {
-        _renderBox.ObjectInGame.transform.position = GetInGamePosition(_hbox_gameplay, _p1, _gameState);
-        _renderBox.ObjectInGame.transform.localScale = new Vector3(GameUnitsToUnityUnits(_hbox_gameplay.Width), 1.8f, 1f);
+        float y = 1.8f;
+        Vector3 pos = GetInGamePosition(_hbox_gameplay, _p1, _gameState);
+        Vector3 scale = new Vector3(GameUnitsToUnityUnits(_hbox_gameplay.Width), y, 1f);
+        _renderBox.ObjectInGame.transform.position = pos;
+        _renderBox.ObjectInGame.transform.localScale = scale;
+        if (_hbox_gameplay.AttackAttribute == GameplayEnums.AttackAttribute.Low)
+        {
+            _renderBox.ObjectInGame.transform.position = pos - new Vector3(0, y / -2f);
+            _renderBox.ObjectInGame.transform.localScale = new Vector3(scale.x, scale.y / 2f);
+        }
         _renderBox.StillExists = true;
     }
 
@@ -240,12 +248,18 @@ public class GameplayRenderer : MonoBehaviour {
                 else
                     currentCharacterState = _gameState.P2_State;
                 Material toSet;
-                switch(currentCharacterState)
+                GameplayEnums.CharacterState cstate = currentCharacterState;
+                if (cstate == GameplayEnums.CharacterState.Special)
+                {
+                    if (_p1)
+                        cstate = _gameState.P1_CState.SelectedCharacter.GetEquivalentState();
+                    else
+                        cstate = _gameState.P2_CState.SelectedCharacter.GetEquivalentState();
+                }
+                switch(cstate)
                 {
                     case GameplayEnums.CharacterState.AttackActive:
                     case GameplayEnums.CharacterState.AttackStartup:
-                    case GameplayEnums.CharacterState.SpecialActive:
-                    case GameplayEnums.CharacterState.SpecialStartup:
                     case GameplayEnums.CharacterState.ThrowActive:
                     case GameplayEnums.CharacterState.ThrowStartup:
                         if (_p1)
@@ -256,7 +270,6 @@ public class GameplayRenderer : MonoBehaviour {
                     case GameplayEnums.CharacterState.AttackRecovery:
                     case GameplayEnums.CharacterState.Blockstun:
                     case GameplayEnums.CharacterState.Clash:
-                    case GameplayEnums.CharacterState.SpecialRecovery:
                     case GameplayEnums.CharacterState.ThrowBreak:
                     case GameplayEnums.CharacterState.ThrowRecovery:
                         if (_p1)
