@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 09cdaa1422df81b4683d71ea670577d5
-timeCreated: 1509827929
+timeCreated: 1510023342
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
@@ -30,6 +30,7 @@ MonoImporter:
   - TXT_Throw: {fileID: 21300000, guid: 18418915f535f0b4380cf5000ccd5090, type: 3}
   - TXT_GameOver: {fileID: 21300000, guid: cb7a76f55b12cb345a41e39edf330189, type: 3}
   - TXT_AnyButton: {fileID: 21300000, guid: c81217fc7d07a4244bc3e3047f7cf851, type: 3}
+  - TXT_Feet: {fileID: 21300000, guid: 20737d27bf614ef4cbc47a94bb570891, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

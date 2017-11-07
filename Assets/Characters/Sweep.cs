@@ -105,4 +105,9 @@ public class Sweep : Character
                 return GameplayEnums.CharacterState.AttackRecovery;
         }
     }
+
+    public override GameplayEnums.Outcome GetCurrentCharacterSpecialOutcome()
+    {
+        return GameplayEnums.Outcome.Sweep;
+    }
 }

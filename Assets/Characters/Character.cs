@@ -51,5 +51,16 @@ public abstract class Character
     {
         return CreateCopy();
     }
+
     protected abstract Character CreateCopy();
+
+    public virtual GameplayEnums.Outcome GetCurrentCharacterSpecialOutcome()
+    {
+        return GameplayEnums.Outcome.StrayHit;
+    }
+
+    public virtual void HandleInputs(CharacterState _cstate, SinglePlayerInputs _currentInputs, SinglePlayerInputs _previousInputs)
+    {
+
+    }
 }

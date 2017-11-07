@@ -96,6 +96,8 @@ public class GameLoop : MonoBehaviour {
             //4. Checks if the match is over
             if (outcome.IsEnd())
             {
+                //Extra render on game end?
+                GameplayRendererObject.RenderScene(m_previousState, Match, CurrentSplashState);
                 HandleOutcome(outcome);
                 CurrentSplashState.CurrentState = SplashState.State.RoundOver_ShowResult;
                 CurrentSplashState.FramesRemaining = GameplayConstants.FRAMES_END_ROUND_SPLASH;
@@ -389,87 +391,16 @@ public class GameLoop : MonoBehaviour {
         //Check if current state can be affected by inputs (idle, crouch, walking into buttons, as well as throw tech)
 
         //1. p1
-        switch(updatedState.P1_State)
-        {
-            case GameplayEnums.CharacterState.Crouch:
-            case GameplayEnums.CharacterState.Idle:
-            case GameplayEnums.CharacterState.WalkBack:
-            case GameplayEnums.CharacterState.WalkForward:
-                updatedState.P1_CState.SetCharacterState( GetCharacterAction(_p1Inputs, m_p1LastInputs));
-                break;
-            case GameplayEnums.CharacterState.BeingThrown:
-                if (_p1Inputs.B && !m_p1LastInputs.B)
-                {
-                    updatedState.P2_State = GameplayEnums.CharacterState.ThrowBreak;
-                    updatedState.P2_StateFrames = 0;
-                    updatedState.P2_Hitboxes.RemoveAll(o => o.HitboxType == GameplayEnums.HitboxType.Hurtbox_Limb);
-                    updatedState.P2_Hitboxes.RemoveAll(o => o.HitboxType == GameplayEnums.HitboxType.Hitbox_Throw);
-                    updatedState.P1_State = GameplayEnums.CharacterState.ThrowBreak;
-                    updatedState.P1_StateFrames = 0;
-                    updatedState.P1_Hitboxes.RemoveAll(o => o.HitboxType == GameplayEnums.HitboxType.Hurtbox_Limb);
-                    updatedState.P1_Hitboxes.RemoveAll(o => o.HitboxType == GameplayEnums.HitboxType.Hitbox_Throw);
-                }
-                break;
-        }
+        updatedState.P1_CState.UpdateStateWithInputs(_p1Inputs, m_p1LastInputs, updatedState.P2_CState);
 
         //2. p2
-        switch (updatedState.P2_State)
-        {
-            case GameplayEnums.CharacterState.Crouch:
-            case GameplayEnums.CharacterState.Idle:
-            case GameplayEnums.CharacterState.WalkBack:
-            case GameplayEnums.CharacterState.WalkForward:
-                updatedState.P2_CState.SetCharacterState(GetCharacterAction(_p2Inputs, m_p2LastInputs));
-                break;
-            case GameplayEnums.CharacterState.BeingThrown:
-                if (_p2Inputs.B && !m_p2LastInputs.B)
-                {
-                    updatedState.P2_State = GameplayEnums.CharacterState.ThrowBreak;
-                    updatedState.P2_StateFrames = 0;
-                    updatedState.P2_Hitboxes.RemoveAll(o => o.HitboxType == GameplayEnums.HitboxType.Hurtbox_Limb);
-                    updatedState.P2_Hitboxes.RemoveAll(o => o.HitboxType == GameplayEnums.HitboxType.Hitbox_Throw);
-                    updatedState.P1_State = GameplayEnums.CharacterState.ThrowBreak;
-                    updatedState.P1_StateFrames = 0;
-                    updatedState.P1_Hitboxes.RemoveAll(o => o.HitboxType == GameplayEnums.HitboxType.Hurtbox_Limb);
-                    updatedState.P1_Hitboxes.RemoveAll(o => o.HitboxType == GameplayEnums.HitboxType.Hitbox_Throw);
-                }
-                break;
-        }
+        updatedState.P2_CState.UpdateStateWithInputs(_p2Inputs, m_p2LastInputs, updatedState.P1_CState);
 
 
         return updatedState;
     }
 
     
-    private GameplayEnums.CharacterState GetCharacterAction(SinglePlayerInputs _inputs, SinglePlayerInputs _previousInputs)
-    {
-        if(_inputs.C && !_previousInputs.C)
-        {
-            return GameplayEnums.CharacterState.Special;
-        }
-        if(_inputs.B && !_previousInputs.B)
-        {
-            return GameplayEnums.CharacterState.ThrowStartup;
-        }
-        if(_inputs.A && !_previousInputs.A)
-        {
-            return GameplayEnums.CharacterState.AttackStartup;
-        }
-        switch(_inputs.JoystickDirection)
-        {
-            case 9:
-            case 6:
-                return GameplayEnums.CharacterState.WalkForward;
-            case 7:
-            case 4:
-                return GameplayEnums.CharacterState.WalkBack;
-            case 1:
-            case 2:
-            case 3:
-                return GameplayEnums.CharacterState.Crouch;
-        }
-        return GameplayEnums.CharacterState.Idle;
-    }
 
     private MatchOutcome ResolveActions(SinglePlayerInputs _p1Inputs, SinglePlayerInputs _p2Inputs, GameState _currentState)
     {
@@ -689,9 +620,17 @@ public class GameLoop : MonoBehaviour {
         if (p1_is_hit && p2_is_hit)
             res = new MatchOutcome(true, true, GameplayEnums.Outcome.Trade);
         else if (p1_is_hit)
-            res = new MatchOutcome(false, true, GetOutcomeFromOpponentState(_currentState.P1_CState));
+        {
+            GameplayEnums.Outcome outcome = GetOutcomeFromOpponentState(_currentState.P1_CState);
+            outcome = GetOutcomeFromPlayerState(_currentState.P2_CState, outcome);
+            res = new MatchOutcome(false, true, outcome);
+        }
         else if (p2_is_hit)
-            res = new MatchOutcome(true, false, GetOutcomeFromOpponentState(_currentState.P2_CState));
+        {
+            GameplayEnums.Outcome outcome = GetOutcomeFromOpponentState(_currentState.P2_CState);
+            outcome = GetOutcomeFromPlayerState(_currentState.P1_CState, outcome);
+            res = new MatchOutcome(false, true, outcome);
+        }
         else if ((p2_throws_p1 && p1_throws_p2) || throwBreak)
         {
             _currentState.P2_State = GameplayEnums.CharacterState.ThrowBreak;
@@ -793,6 +732,19 @@ public class GameLoop : MonoBehaviour {
             default:
                 return GameplayEnums.Outcome.StrayHit;
         }
+    }
+
+    private GameplayEnums.Outcome GetOutcomeFromPlayerState(CharacterState _winner, GameplayEnums.Outcome _previousOutcome)
+    {
+        //if previous outcome is "stray hit", it can be overridden with 
+        if(_previousOutcome == GameplayEnums.Outcome.StrayHit)
+        {
+            if(_winner.State  == GameplayEnums.CharacterState.Special)
+            {
+                return _winner.SelectedCharacter.GetCurrentCharacterSpecialOutcome();
+            }
+        }
+        return _previousOutcome;
     }
 
     private bool DoHitboxesOverlap(Hitbox_Gameplay _p1Box, Hitbox_Gameplay _p2Box, GameState _currentState)

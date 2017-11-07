@@ -44,6 +44,67 @@ public class CharacterState
         SelectedCharacter = _toCopy.SelectedCharacter.CopyCharacter();
     }
 
+    public void UpdateStateWithInputs(SinglePlayerInputs _inputs, SinglePlayerInputs _lastInputs, CharacterState _otherCharacter)
+    {
+        switch (State)
+        {
+            case GameplayEnums.CharacterState.Crouch:
+            case GameplayEnums.CharacterState.Idle:
+            case GameplayEnums.CharacterState.WalkBack:
+            case GameplayEnums.CharacterState.WalkForward:
+                SetCharacterState(GetCharacterAction(_inputs, _lastInputs));
+                break;
+            case GameplayEnums.CharacterState.BeingThrown:
+                if (_inputs.B && !_lastInputs.B)
+                {
+                    _otherCharacter.SetThrowBreak();
+                    SetThrowBreak();
+                }
+                break;
+            case GameplayEnums.CharacterState.Special:
+                SelectedCharacter.HandleInputs(this, _inputs, _lastInputs);
+                break;
+        }
+    }
+
+    public GameplayEnums.CharacterState GetCharacterAction(SinglePlayerInputs _inputs, SinglePlayerInputs _previousInputs)
+    {
+        if (_inputs.C && !_previousInputs.C)
+        {
+            return GameplayEnums.CharacterState.Special;
+        }
+        if (_inputs.B && !_previousInputs.B)
+        {
+            return GameplayEnums.CharacterState.ThrowStartup;
+        }
+        if (_inputs.A && !_previousInputs.A)
+        {
+            return GameplayEnums.CharacterState.AttackStartup;
+        }
+        switch (_inputs.JoystickDirection)
+        {
+            case 9:
+            case 6:
+                return GameplayEnums.CharacterState.WalkForward;
+            case 7:
+            case 4:
+                return GameplayEnums.CharacterState.WalkBack;
+            case 1:
+            case 2:
+            case 3:
+                return GameplayEnums.CharacterState.Crouch;
+        }
+        return GameplayEnums.CharacterState.Idle;
+    }
+
+    public void SetThrowBreak()
+    {
+        State = GameplayEnums.CharacterState.ThrowBreak;
+        StateFrames = 0;
+        Hitboxes.RemoveAll(o => o.HitboxType == GameplayEnums.HitboxType.Hurtbox_Limb);
+        Hitboxes.RemoveAll(o => o.HitboxType == GameplayEnums.HitboxType.Hitbox_Throw);
+    }
+
     public void SetCharacterState(GameplayEnums.CharacterState _state)
     {
         State = _state;

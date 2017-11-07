@@ -164,6 +164,9 @@ public class GameplayRenderer : MonoBehaviour {
             case GameplayEnums.Outcome.WhiffPunish:
                 m_spriteList.TXT_WhiffPunish.Active = true;
                 break;
+            case GameplayEnums.Outcome.Sweep:
+                m_spriteList.TXT_Feet.Active = true;
+                break;
         }
     }
 
@@ -231,8 +234,8 @@ public class GameplayRenderer : MonoBehaviour {
         _renderBox.ObjectInGame.transform.localScale = scale;
         if (_hbox_gameplay.AttackAttribute == GameplayEnums.AttackAttribute.Low)
         {
-            _renderBox.ObjectInGame.transform.position = pos - new Vector3(0, y / 4f);
-            _renderBox.ObjectInGame.transform.localScale = new Vector3(scale.x, scale.y / 2f);
+            _renderBox.ObjectInGame.transform.position = pos - new Vector3(0, y / 2f, 2f);
+            //_renderBox.ObjectInGame.transform.localScale = new Vector3(scale.x, scale.y / 2f);
         }
         _renderBox.StillExists = true;
     }

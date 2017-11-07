@@ -52,8 +52,8 @@ namespace FooziesConstants
          /// <summary>
          /// TIME CONSTANTS
          /// </summary>
-        public const int FRAMES_END_ROUND_SPLASH = 60;
-        public const int FRAMES_COUNTDOWN = 20;
+        public const int FRAMES_END_ROUND_SPLASH = 120;
+        public const int FRAMES_COUNTDOWN = 30;
         public const float FRAME_LENGTH = 0.016666666666f;
         public const int GAME_OVER_LENGTH = 99999;
     }

@@ -123,7 +123,7 @@ public class GameState {
     public GameState()
     {
         P1_CState = new CharacterState(true, new Sweep());
-        P2_CState = new CharacterState(false, new Sweep());
+        P2_CState = new CharacterState(false, new Dash());
 
 
         P1_Position = 0;
