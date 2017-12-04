@@ -6,7 +6,7 @@ using System.Text;
 namespace Assets.Menus
 {
     //base class for any menu in the game (ex: main menu, character select)
-    abstract public class Menu
+    abstract public class Menu : ApplicationState
     {
         public enum MenuResult { Continue, Back, Remain}
         public List<MenuItem> Items;
@@ -23,6 +23,14 @@ namespace Assets.Menus
             m_lastInputsP1 = new SinglePlayerInputs();
             m_lastInputsP2 = new SinglePlayerInputs();
         }
+
+        public override void Update(Inputs _inputs)
+        {
+            MenuResult res = UpdateMenu(_inputs.P1_Inputs, _inputs.P2_Inputs);
+            HandleMenuResult(res);
+        }
+
+        protected abstract void HandleMenuResult(MenuResult _result);
 
         public MenuResult UpdateMenu(SinglePlayerInputs _p1Inputs, SinglePlayerInputs _p2Inputs)
         {

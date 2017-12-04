@@ -21,5 +21,30 @@ namespace Assets.Menus
             MainMenu mm = new MainMenu(items);
             return mm;
         }
+
+        protected override void HandleMenuResult(MenuResult _result)
+        {
+            if (_result == MenuResult.Continue)
+            {
+                Match.SetData set = new Match.SetData();
+                if (P1.SelectionState == PlayerInMenu.SelectionStates.Confirmed)
+                    if (P1.SelectedItem.ItemName == STR_CHARACTERSELECT)
+                        ApplicationStateManager.GetInstance().SetCharacterSelectScreen(set); //go to character select screen
+                if (P2.SelectionState == PlayerInMenu.SelectionStates.Confirmed)
+                    if (P2.SelectedItem.ItemName == STR_CHARACTERSELECT)
+                        ApplicationStateManager.GetInstance().SetCharacterSelectScreen(set); //go to character select screen
+            }
+        }
+
+        protected override MenuResult EvaluateMenuResult()
+        {
+            if (P1.SelectionState == PlayerInMenu.SelectionStates.Confirmed ||
+                P2.SelectionState == PlayerInMenu.SelectionStates.Confirmed)
+                return MenuResult.Continue;
+            if (P1.SelectionState == PlayerInMenu.SelectionStates.Cancel ||
+                P2.SelectionState == PlayerInMenu.SelectionStates.Cancel)
+                return MenuResult.Back;
+            return MenuResult.Remain;
+        }
     }
 }
