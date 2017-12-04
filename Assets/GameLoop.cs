@@ -629,7 +629,7 @@ public class GameLoop : MonoBehaviour {
         {
             GameplayEnums.Outcome outcome = GetOutcomeFromOpponentState(_currentState.P2_CState);
             outcome = GetOutcomeFromPlayerState(_currentState.P1_CState, outcome);
-            res = new MatchOutcome(false, true, outcome);
+            res = new MatchOutcome(true, false, outcome);
         }
         else if ((p2_throws_p1 && p1_throws_p2) || throwBreak)
         {
