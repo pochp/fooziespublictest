@@ -12,5 +12,4 @@ testbuild_Data/
 *.cjc
 *.exe
 *.fbx
-*.png
 /obj
