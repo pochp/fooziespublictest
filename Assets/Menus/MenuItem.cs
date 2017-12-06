@@ -17,15 +17,15 @@ namespace Assets.Menus
         }
         private string m_itemName;
 
-        public MenuItem(string _name, int _posX, int _posY, int _width = 100, int _height = 100)
+        public MenuItem(string _name, int _posX, int _posY)
         {
             m_itemName = _name;
+            PositionX = _posX;
+            PositionY = _posY;
         }
 
         public int PositionX;
         public int PositionY;
-        public int Width;
-        public int Height;
 
        
     }

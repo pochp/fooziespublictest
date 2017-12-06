@@ -120,10 +120,11 @@ public class GameState {
     public CharacterState P1_CState;
     public CharacterState P2_CState;
 
-    public GameState()
+    public GameState(Match.MatchInitializationData _initData)
     {
-        P1_CState = new CharacterState(true, new Sweep());
-        P2_CState = new CharacterState(false, new Dash());
+        _initData.InitCharacters();
+        P1_CState = new CharacterState(true, _initData.P1_Character); 
+        P2_CState = new CharacterState(false, _initData.P2_Character);
 
 
         P1_Position = 0;

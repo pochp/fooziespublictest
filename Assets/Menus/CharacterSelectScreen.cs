@@ -65,5 +65,18 @@ namespace Assets.Menus
             }
             throw new Exception("No Character Selected");
         }
+
+        public override string GetDebugInfo()
+        {
+            string info = "Character Select Screen" + Environment.NewLine;
+            info += "P1 Selection : " + P1.SelectedItem.ItemName + Environment.NewLine;
+            info += "P2 Selection : " + P2.SelectedItem.ItemName + Environment.NewLine;
+            info += "P1 Score : " + m_currentSetData.P1_Score.ToString() + Environment.NewLine;
+            info += "P2 Score : " + m_currentSetData.P2_Score.ToString() + Environment.NewLine;
+
+            //info += "P1 timer : " + P1.MoveCooldown.ToString() + ", State : " + P1.SelectionState.ToString();
+
+            return info;
+        }
     }
 }

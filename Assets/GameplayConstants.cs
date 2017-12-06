@@ -12,15 +12,17 @@ namespace FooziesConstants
         /// </summary>
         /// 
 
-        public const int ATTACK_STARTUP = 7;
-        public const int ATTACK_ACTIVE = 2;
+        public const int ATTACK_STARTUP = 6;
+        public const int ATTACK_ACTIVE = 4;
+        public const int ATTACK_FULL_EXTEND = 2;
         public const int ATTACK_RECOVERY_TOTAL = 45;
         public const int ATTACK_RECOVERY_SHORTEN = 26;
         public const int HURTBOX_WHIFF_EARLY = 2000;
         public const int HURTBOX_WHIFF_LATE = 1000;
-        public const int HURTBOX_STARTUP = 1000;
-        public const int HURTBOX_ACTIVE = 1500; //hurtbox when active is shorter than the recovery so it favorises clashes
-        public const int HITBOX_ACTIVE = 2200;
+        public const int HURTBOX_STARTUP = 500;
+        public const int HURTBOX_ACTIVE = 500; //hurtbox when active is shorter than the recovery so it favorises clashes
+        public const int HITBOX_ACTIVE_EARLY = 1200;
+        public const int HITBOX_ACTIVE_LATE = 2200;
         public const int CHARACTER_HURTBOX_WIDTH = 500;
         public const int CHARACTER_HURTBOX_HEIGHT = 2500;
         public const int CROUCHING_HURTBOX_WIDTH = 600;

@@ -358,7 +358,7 @@ public class SpriteRenderPair
         srp.SpriteRenderer = srp.ChildObject.AddComponent<SpriteRenderer>() as SpriteRenderer;
         srp.Sprite = _s;
         srp.ChildObject.transform.SetParent(_gameObject.transform);
-        srp.ChildObject.transform.localPosition = new Vector3(0, _positionOnScreen, 0);
+        srp.ChildObject.transform.localPosition = new Vector3(0, _positionOnScreen, -0.1f);
         return srp;
     }
 }

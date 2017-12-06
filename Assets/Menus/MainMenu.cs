@@ -46,5 +46,10 @@ namespace Assets.Menus
                 return MenuResult.Back;
             return MenuResult.Remain;
         }
+
+        public override string GetDebugInfo()
+        {
+            return base.GetDebugInfo();
+        }
     }
 }

@@ -43,7 +43,7 @@ namespace Gameplay
             m_setData = _setData;
             Match = new MatchState();
             CurrentSplashState = new SplashState();
-            m_previousState = new GameState();
+            m_previousState = new GameState(_setData.InitData);
             m_previousState = SetRoundStart();
         }
 
@@ -96,6 +96,11 @@ namespace Gameplay
                     HandleOutcome(outcome);
                     CurrentSplashState.CurrentState = SplashState.State.RoundOver_ShowResult;
                     CurrentSplashState.FramesRemaining = GameplayConstants.FRAMES_END_ROUND_SPLASH;
+
+
+                    //camera tests
+                    //isPanning = true;
+                    isRotating = true;
                 }
                 --currentState.RemainingTime;
                 m_previousState = currentState;
@@ -104,6 +109,9 @@ namespace Gameplay
 
             //5. Render Scene
             GameplayRendererObject.RenderScene(m_previousState, Match, CurrentSplashState);
+
+            //6. Camera Tests
+            CameraMoveTest(Match);
         }
 
         //returns whether or not to stop here and wait a few more frames
@@ -158,7 +166,7 @@ namespace Gameplay
             return true;
         }
 
-        void OnGUI()
+        public override string GetDebugInfo()
         {
             //if (!Initialized)
             //    return;
@@ -181,10 +189,10 @@ namespace Gameplay
             //    "\n\rP2 X : " + Input.GetAxisRaw("Horizontal_PsStick2").ToString() +
             //    "\n\rP2 Y : " + Input.GetAxisRaw("Vertical_PsStick2").ToString();
 
-            string sweepdebug = "P1 Gauge : " + m_previousState.P1_Gauge.ToString() + "/" + m_previousState.P1_CState.SelectedCharacter.MaxGauge.ToString() +
-                "\n\rP1 Current Action : " + m_previousState.P1_State.ToString() +
-                "\n\rP1 StateFrames : " + m_previousState.P1_CState.StateFrames.ToString() +
-                "\n\rP1 SweepState : " + (m_previousState.P1_CState.SelectedCharacter as Sweep).State.ToString();
+          //string sweepdebug = "P1 Gauge : " + m_previousState.P1_Gauge.ToString() + "/" + m_previousState.P1_CState.SelectedCharacter.MaxGauge.ToString() +
+          //    "\n\rP1 Current Action : " + m_previousState.P1_State.ToString() +
+          //    "\n\rP1 StateFrames : " + m_previousState.P1_CState.StateFrames.ToString() +
+          //    "\n\rP1 SweepState : " + (m_previousState.P1_CState.SelectedCharacter as Sweep).State.ToString();
 
             //string joystickdirs = "P2 dir : " + m_p2LastInputs.JoystickDirection.ToString() +
             //    "\n\rP2 X : " + Input.GetAxisRaw("Horizontal_PsStick2").ToString();
@@ -197,9 +205,9 @@ namespace Gameplay
 
             //string splash = CurrentSplashState.CurrentState.ToString() + CurrentSplashState.FramesRemaining.ToString();
 
+            return score;
 
-
-            GUI.TextArea(new Rect(10, 10, Screen.width - 10, Screen.height / 2), score + sweepdebug);
+            //GUI.TextArea(new Rect(10, 10, Screen.width - 10, Screen.height / 2), score + sweepdebug);
         }
 
         private void HandleOutcome(MatchOutcome _outcome)
@@ -223,6 +231,7 @@ namespace Gameplay
             if (Match.P1_Score >= GameplayConstants.ROUNDS_TO_WIN || Match.P2_Score >= GameplayConstants.ROUNDS_TO_WIN)
             {
                 Match.GameOver = true;
+                m_setData.AddResult(_outcome);
             }
         }
 
@@ -231,7 +240,7 @@ namespace Gameplay
             CurrentSplashState.CurrentState = SplashState.State.RoundStart_3;
             CurrentSplashState.FramesRemaining = GameplayConstants.FRAMES_COUNTDOWN;
 
-            GameState state = new GameState();
+            GameState state = new GameState(m_setData.InitData);
 
             state.P1_Gauge = m_previousState.P1_Gauge;
             state.P1_Hitboxes.Add(CreateCharacterStartingHitbox());
@@ -251,6 +260,9 @@ namespace Gameplay
 
             m_p1LastInputs = new SinglePlayerInputs();
             m_p2LastInputs = new SinglePlayerInputs();
+
+
+            ResetCamera();
 
             return state;
         }
@@ -757,6 +769,65 @@ namespace Gameplay
             return true;
         }
 
+        #region CameraTests
+        public float turnSpeed = 4.0f;      // Speed of camera turning when mouse moves in along an axis
+        public float panSpeed = 4.0f;       // Speed of the camera when being panned
+        public float zoomSpeed = 4.0f;      // Speed of the camera going back and forth
+        private Vector3 mouseOrigin = Vector3.zero;    // Position of cursor when mouse dragging starts
+        private bool isPanning = false;     // Is the camera being panned?
+        private bool isRotating = false;    // Is the camera being rotated?
+        private bool isZooming = false;		// Is the camera zooming?
+
+        private void CameraMoveTest(MatchState _matchState)
+        {
+            if (_matchState.Outcomes.Count <= 0)
+                return;
+            MatchOutcome lastOutcome = _matchState.Outcomes[_matchState.Outcomes.Count - 1];
+            float rotationSpeed = 0f;
+            if (lastOutcome.P1_Scores)
+                rotationSpeed += 20f;
+            if (lastOutcome.P2_Scores)
+                rotationSpeed -= 20f;
+            Camera mc = Camera.main;
+            // Rotate camera along X and Y axis
+            if (isRotating)
+            {
+                mc.transform.RotateAround(Vector3.zero, Vector3.up, rotationSpeed * Time.deltaTime);
+                Camera.main.fieldOfView -= 0.01f;
+
+                //Vector3 pos = Camera.main.ScreenToViewportPoint(Input.mousePosition - mouseOrigin);
+
+                //mc.transform.RotateAround(mc.transform.position, mc.transform.right, -pos.y * turnSpeed);
+                //mc.transform.RotateAround(mc.transform.position, Vector3.up, pos.x * turnSpeed);
+            }
+
+            // Move the camera on it's XY plane
+            if (isPanning)
+            {
+                Vector3 pos = Camera.main.ScreenToViewportPoint(Input.mousePosition - mouseOrigin);
+
+                Vector3 move = new Vector3(pos.x * panSpeed, pos.y * panSpeed, 0);
+                mc.transform.Translate(move, Space.Self);
+            }
+
+            // Move the camera linearly along Z axis
+            if (isZooming)
+            {
+                Vector3 pos = Camera.main.ScreenToViewportPoint(Input.mousePosition - mouseOrigin);
+
+                Vector3 move = pos.y * zoomSpeed * mc.transform.forward;
+                mc.transform.Translate(move, Space.World);
+            }
+        }
+
+        private void ResetCamera()
+        {
+            Camera.main.transform.position = new Vector3(0, 0, -100);
+            Camera.main.transform.rotation = new Quaternion(0, 0, 0, 0);
+            Camera.main.fieldOfView = 5.8f;
+            isRotating = false;
+        }
+        #endregion  
     }
 
 }

@@ -32,6 +32,7 @@ public class GameLoop : MonoBehaviour {
     // Use this for initialization
     void Start() {
         deltaTime = 0;
+        ApplicationStateManager.GetInstance().InitManager(GameplayRendererObject);
     }
 
     // Update is called once per frame
@@ -209,9 +210,16 @@ public class GameLoop : MonoBehaviour {
 
         ////string splash = CurrentSplashState.CurrentState.ToString() + CurrentSplashState.FramesRemaining.ToString();
 
+
+        GUIStyle style = new GUIStyle();
+        style.fontSize = 26;
         string currentGameStatus = ApplicationStateManager.GetCurrentStateName();
 
-        GUI.TextArea(new Rect(10, 10, Screen.width - 10, Screen.height / 2), currentGameStatus);
+        int halfScreenWidth = Screen.width / 2;
+        int quarterScreenWidth = Screen.width / 4;
+
+
+        GUI.TextArea(new Rect(halfScreenWidth - quarterScreenWidth, 10, halfScreenWidth + quarterScreenWidth, Screen.height / 2), currentGameStatus, style);
     }
 
     //void GameplayStateUpdate(SinglePlayerInputs _p1Inputs, SinglePlayerInputs _p2Inputs)

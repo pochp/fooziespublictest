@@ -20,8 +20,8 @@ namespace Assets.Menus
             Items = _items;
             P1 = new PlayerInMenu(_items.First());
             P2 = new PlayerInMenu(_items.First());
-            m_lastInputsP1 = new SinglePlayerInputs();
-            m_lastInputsP2 = new SinglePlayerInputs();
+            m_lastInputsP1 = null;
+            m_lastInputsP2 = null;
         }
 
         public override void Update(Inputs _inputs)
@@ -34,9 +34,17 @@ namespace Assets.Menus
 
         public MenuResult UpdateMenu(SinglePlayerInputs _p1Inputs, SinglePlayerInputs _p2Inputs)
         {
+            //for the first time, inputs will be null, so we can copy the first inputs. this makes it so when entering the menu you don't auto select stuff
+            if (m_lastInputsP1 == null)
+                m_lastInputsP1 = _p1Inputs;
+            if (m_lastInputsP2 == null)
+                m_lastInputsP2 = _p2Inputs;
+
             //update character selection
             UpdateCharacterSelection(_p1Inputs, P1, m_lastInputsP1);
             UpdateCharacterSelection(_p2Inputs, P2, m_lastInputsP2);
+            m_lastInputsP1 = _p1Inputs;
+            m_lastInputsP2 = _p2Inputs;
 
             //check menu state
             return EvaluateMenuResult();
@@ -55,13 +63,13 @@ namespace Assets.Menus
 
         protected void UpdateCharacterSelection(SinglePlayerInputs _inputs, PlayerInMenu _player, SinglePlayerInputs _lastInputs)
         {
-            if (_inputs.A)
+            if (_inputs.A && !_lastInputs.A)
                 _player.SelectionState = PlayerInMenu.SelectionStates.Confirmed;
             if (_inputs.B && !_lastInputs.B)
             {
                 if (_player.SelectionState == PlayerInMenu.SelectionStates.Confirmed)
                     _player.SelectionState = PlayerInMenu.SelectionStates.Pending;
-                if (_player.SelectionState == PlayerInMenu.SelectionStates.Pending)
+                else if (_player.SelectionState == PlayerInMenu.SelectionStates.Pending)
                     _player.SelectionState = PlayerInMenu.SelectionStates.Cancel;
             }
 
@@ -76,7 +84,7 @@ namespace Assets.Menus
             {
                 _player.MoveCooldown--;
             }
-            if(_player.MoveCooldown == 0 && _inputs.JoystickDirection!=5)
+            if(_player.MoveCooldown <= 0 && _inputs.JoystickDirection!=5)
             {
                 MenuItem nextSelection = FindNextItemInDirection(_inputs.JoystickDirection, _player.SelectedItem);
                 if(nextSelection != null)

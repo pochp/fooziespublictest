@@ -149,7 +149,11 @@ public class CharacterState
                     State = GameplayEnums.CharacterState.AttackRecovery;
                     StateFrames = 0;
                     Hitboxes.RemoveAll(o => o.HitboxType == GameplayEnums.HitboxType.Hitbox_Attack);
-                    ModifyLimbHitbox(Hitboxes, GameplayConstants.HURTBOX_WHIFF_EARLY);
+                    ModifyHitbox(Hitboxes, GameplayConstants.HURTBOX_WHIFF_EARLY);
+                }
+                if (StateFrames == GameplayConstants.ATTACK_FULL_EXTEND)
+                {
+                    ModifyHitbox(Hitboxes, GameplayConstants.HITBOX_ACTIVE_LATE, GameplayEnums.HitboxType.Hitbox_Attack);
                 }
                 break;
             case GameplayEnums.CharacterState.AttackRecovery:
@@ -161,7 +165,7 @@ public class CharacterState
                 }
                 if (StateFrames == GameplayConstants.ATTACK_RECOVERY_SHORTEN)
                 {
-                    ModifyLimbHitbox(Hitboxes, GameplayConstants.HURTBOX_WHIFF_LATE);
+                    ModifyHitbox(Hitboxes, GameplayConstants.HURTBOX_WHIFF_LATE);
                 }
                 break;
             case GameplayEnums.CharacterState.AttackStartup:
@@ -169,8 +173,8 @@ public class CharacterState
                 {
                     State = GameplayEnums.CharacterState.AttackActive;
                     StateFrames = 0;
-                    Hitboxes.Add(CreateHitbox(GameplayEnums.HitboxType.Hitbox_Attack, GameplayConstants.HITBOX_ACTIVE));
-                    ModifyLimbHitbox(Hitboxes, GameplayConstants.HURTBOX_ACTIVE);
+                    Hitboxes.Add(CreateHitbox(GameplayEnums.HitboxType.Hitbox_Attack, GameplayConstants.HITBOX_ACTIVE_EARLY));
+                    ModifyHitbox(Hitboxes, GameplayConstants.HURTBOX_ACTIVE);
                 }
                 break;
             case GameplayEnums.CharacterState.BeingThrown:
@@ -222,7 +226,7 @@ public class CharacterState
                     State = GameplayEnums.CharacterState.ThrowRecovery;
                     StateFrames = 0;
                     Hitboxes.RemoveAll(o => o.HitboxType == GameplayEnums.HitboxType.Hitbox_Throw);
-                    ModifyLimbHitbox(Hitboxes, GameplayConstants.THROW_RECOVERY_HURTBOX);
+                    ModifyHitbox(Hitboxes, GameplayConstants.THROW_RECOVERY_HURTBOX);
                 }
                 break;
             case GameplayEnums.CharacterState.ThrowBreak:
@@ -257,7 +261,7 @@ public class CharacterState
                     State = GameplayEnums.CharacterState.ThrowActive;
                     StateFrames = 0;
                     Hitboxes.Add(CreateHitbox(GameplayEnums.HitboxType.Hitbox_Throw, GameplayConstants.THROW_ACTIVE_RANGE));
-                    ModifyLimbHitbox(Hitboxes, GameplayConstants.THROW_STARTUP_HURTBOX);
+                    ModifyHitbox(Hitboxes, GameplayConstants.THROW_STARTUP_HURTBOX);
                 }
                 break;
             case GameplayEnums.CharacterState.WalkBack:
@@ -292,9 +296,9 @@ public class CharacterState
         return box;
     }
 
-    public void ModifyLimbHitbox(List<Hitbox_Gameplay> _hitboxes, int _length)
+    public void ModifyHitbox(List<Hitbox_Gameplay> _hitboxes, int _length, GameplayEnums.HitboxType _hitboxType = GameplayEnums.HitboxType.Hurtbox_Limb)
     {
-        Hitbox_Gameplay hbox = _hitboxes.Find(o => o.HitboxType == GameplayEnums.HitboxType.Hurtbox_Limb);
+        Hitbox_Gameplay hbox = _hitboxes.Find(o => o.HitboxType == _hitboxType);
         hbox.Width = _length;
         if (FacingRight)
         {

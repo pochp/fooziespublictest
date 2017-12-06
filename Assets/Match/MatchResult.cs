@@ -5,13 +5,13 @@ using System.Text;
 
 namespace Match
 {
-    public class MatchOutcome
+    public class MatchResult
     {
         public enum Result { P1_Win, P2_Win}
-        public Result MatchResult;
-        public MatchOutcome(Result _res)
+        public Result Match_Result;
+        public MatchResult(Result _res)
         {
-            MatchResult = _res;
+            Match_Result = _res;
         }
     }
 }

@@ -22,7 +22,7 @@ public class Sweep : Character
 
     public Sweep() : base()
     {
-        m_state = SweepState.Inactive;
+        Initialize();
     }
 
     protected override Character CreateCopy()
@@ -62,7 +62,7 @@ public class Sweep : Character
                     m_state = SweepState.Recovery;
                 _character.StateFrames = 0;
                 _character.Hitboxes.RemoveAll(o => o.HitboxType == GameplayEnums.HitboxType.Hitbox_Attack);
-                _character.ModifyLimbHitbox(_character.Hitboxes, HURTBOX_WHIFF_EARLY);
+                _character.ModifyHitbox(_character.Hitboxes, HURTBOX_WHIFF_EARLY);
             }
             break;
             case SweepState.Recovery:
@@ -75,7 +75,7 @@ public class Sweep : Character
             }
             if (_character.StateFrames == ATTACK_RECOVERY_SHORTEN)
             {
-                    _character.ModifyLimbHitbox(_character.Hitboxes, HURTBOX_WHIFF_LATE);
+                    _character.ModifyHitbox(_character.Hitboxes, HURTBOX_WHIFF_LATE);
             }
             break;
             case SweepState.Startup:
@@ -86,7 +86,7 @@ public class Sweep : Character
                     Hitbox_Gameplay hbox = _character.CreateHitbox(GameplayEnums.HitboxType.Hitbox_Attack, HITBOX_ACTIVE);
                     hbox.AttackAttribute = GameplayEnums.AttackAttribute.Low;
                     _character.Hitboxes.Add(hbox);
-                    _character.ModifyLimbHitbox(_character.Hitboxes, HURTBOX_ACTIVE);
+                    _character.ModifyHitbox(_character.Hitboxes, HURTBOX_ACTIVE);
             }
             break;
         }
@@ -109,5 +109,10 @@ public class Sweep : Character
     public override GameplayEnums.Outcome GetCurrentCharacterSpecialOutcome()
     {
         return GameplayEnums.Outcome.Sweep;
+    }
+
+    public override void Initialize()
+    {
+        m_state = SweepState.Inactive;
     }
 }

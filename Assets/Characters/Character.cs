@@ -21,6 +21,12 @@ public abstract class Character
 
     public abstract MatchOutcome UpdateSpecial(CharacterState _character, ref int _positionOffset);
     public abstract void SetSpecial(CharacterState _character);
+
+    /// <summary>
+    /// clear any previous data
+    /// </summary>
+    public abstract void Initialize();
+
     public virtual GameplayEnums.Outcome GetOutcomeIfHit()
     {
         return GameplayEnums.Outcome.StrayHit;

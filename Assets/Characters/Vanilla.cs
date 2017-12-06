@@ -10,7 +10,7 @@ public class Vanilla : Character
     /// </summary>
     public Vanilla() : base()
     {
-
+        Initialize();
     }
 
     protected override Character CreateCopy()
@@ -42,5 +42,9 @@ public class Vanilla : Character
     public override GameplayEnums.Outcome GetCurrentCharacterSpecialOutcome()
     {
         return GameplayEnums.Outcome.StrayHit;
+    }
+    public override void Initialize()
+    {
+
     }
 }

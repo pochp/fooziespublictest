@@ -15,7 +15,7 @@ class Dash : Character
 
     public Dash() : base()
     {
-        m_state = DashState.Inactive;
+        Initialize();
     }
 
     protected override Character CreateCopy()
@@ -86,5 +86,10 @@ class Dash : Character
             default:
                 break;
         }
+    }
+
+    public override void Initialize()
+    {
+        m_state = DashState.Inactive;
     }
 }

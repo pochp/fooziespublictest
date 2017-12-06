@@ -31,6 +31,11 @@ public class ApplicationStateManager
         m_currentApplicationState.Update(_inputs);
     }
 
+    public void InitManager(GameplayRenderer _renderer)
+    {
+        m_gameplayRenderer = _renderer;
+    }
+
     public void SetMainMenu()
     {
         m_currentApplicationState = MainMenu.CreateMainMenu();
@@ -52,6 +57,8 @@ public class ApplicationStateManager
     //for debugging
     public static string GetCurrentStateName()
     {
+        return GetInstance().m_currentApplicationState.GetDebugInfo();
+
         ApplicationState ass = GetInstance().m_currentApplicationState;
         if (ass is MainMenu)
             return "MAIN MENU";

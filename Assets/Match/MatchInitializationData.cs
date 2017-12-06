@@ -18,5 +18,11 @@ namespace Match
             P1_Character = new Sweep();
             P2_Character = new Dash();
         }
+
+        public void InitCharacters()
+        {
+            P1_Character.Initialize();
+            P2_Character.Initialize();
+        }
     }
 }
