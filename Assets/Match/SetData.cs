@@ -35,8 +35,12 @@ namespace Match
         }
         public void AddResult(MatchOutcome _outcome)
         {
-            //MatchResult res = new MatchResult()
-            //m_results.Add(_outcome);
+            MatchResult.Result res;
+            if (_outcome.P1_Scores)
+                res = MatchResult.Result.P1_Win;
+            else
+                res = MatchResult.Result.P2_Win;
+            m_results.Add(new Match.MatchResult(res));
         }
         public void SetMatchInitData(MatchInitializationData _initData)
         {

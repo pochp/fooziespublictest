@@ -33,6 +33,8 @@ public class GameplayRenderer : MonoBehaviour {
     public Sprite TXT_GameOver;
     public Sprite TXT_AnyButton;
     public Sprite TXT_Feet;
+    public Sprite TXT_CharSelect;
+    public Sprite TXT_MainMenu;
     
 
     private List<Hitbox_Render> m_activeHitboxes;
