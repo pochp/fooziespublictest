@@ -11,13 +11,7 @@ namespace Gameplay
 
 
     /// <summary>
-    /// TO DO :
-    /// ok-keep working on finishing up hitbox detection
-    /// ok-make sure throw breaks remove hurtboxes
-    /// -renderer
-    /// -scoring
-    /// -main menu, declare winner
-    /// -gauge, special
+    /// When the state of the game is a match (and not a menu)
     /// </summary>
 
     public class GameplayState : ApplicationState
@@ -168,36 +162,6 @@ namespace Gameplay
 
         public override string GetDebugInfo()
         {
-            //if (!Initialized)
-            //    return;
-            //float msec = deltaTime * 1000.0f;
-            //float fps = 1.0f / deltaTime;
-            //string fpstext = string.Format("\n\r{0:0.0} ms ({1:0.} fps)", msec, fps);
-            //string clock = "\n\r" + System.DateTime.Now.Second.ToString();
-            //string dtime = "\n\r" + Time.deltaTime.ToString();
-            //string output = "FPS : " + fpstext +
-            //    "\n\rP1 Current Action : " + m_previousState.P1_State.ToString() +
-            //    "\n\rP1 dir : " + m_p1LastInputs.JoystickDirection.ToString() +
-            //    "\n\rP1 A : " + m_p1LastInputs.A.ToString() +
-            //    "\n\rP1 B : " + m_p1LastInputs.B.ToString() +
-            //    "\n\rP1 X : " + Input.GetAxisRaw("Horizontal_PsStick1").ToString() +
-            //    "\n\rP1 Y : " + Input.GetAxisRaw("Vertical_PsStick1").ToString() +
-            //    "\n\rP2 Current Action : " + m_previousState.P2_State.ToString() +
-            //    "\n\rP2 dir : " + m_p2LastInputs.JoystickDirection.ToString() +
-            //    "\n\rP2 A : " + m_p2LastInputs.A.ToString() +
-            //    "\n\rP2 B : " + m_p2LastInputs.B.ToString() +
-            //    "\n\rP2 X : " + Input.GetAxisRaw("Horizontal_PsStick2").ToString() +
-            //    "\n\rP2 Y : " + Input.GetAxisRaw("Vertical_PsStick2").ToString();
-
-          //string sweepdebug = "P1 Gauge : " + m_previousState.P1_Gauge.ToString() + "/" + m_previousState.P1_CState.SelectedCharacter.MaxGauge.ToString() +
-          //    "\n\rP1 Current Action : " + m_previousState.P1_State.ToString() +
-          //    "\n\rP1 StateFrames : " + m_previousState.P1_CState.StateFrames.ToString() +
-          //    "\n\rP1 SweepState : " + (m_previousState.P1_CState.SelectedCharacter as Sweep).State.ToString();
-
-            //string joystickdirs = "P2 dir : " + m_p2LastInputs.JoystickDirection.ToString() +
-            //    "\n\rP2 X : " + Input.GetAxisRaw("Horizontal_PsStick2").ToString();
-
-            //
             string score = "\n\rP1 Score : " + Match.P1_Score.ToString() +
                 "\n\rP2 Score : " + Match.P2_Score.ToString() +
                 "\n\rTime : " + (m_previousState.RemainingTime / 60).ToString();
@@ -212,6 +176,8 @@ namespace Gameplay
 
         private void HandleOutcome(MatchOutcome _outcome)
         {
+            GameManager.Instance.SoundManager.LowerVolume();
+            GameManager.Instance.SoundManager.PlayRoundEndVoice(_outcome.Outcome);
             if (_outcome.P1_Scores)
             {
                 Match.P1_Score++;
@@ -237,6 +203,7 @@ namespace Gameplay
 
         private GameState SetRoundStart()
         {
+            GameManager.Instance.SoundManager.RestoreVolume();
             CurrentSplashState.CurrentState = SplashState.State.RoundStart_3;
             CurrentSplashState.FramesRemaining = GameplayConstants.FRAMES_COUNTDOWN;
 
@@ -783,6 +750,8 @@ namespace Gameplay
             if (_matchState.Outcomes.Count <= 0)
                 return;
             MatchOutcome lastOutcome = _matchState.Outcomes[_matchState.Outcomes.Count - 1];
+            if (lastOutcome.Outcome != GameplayEnums.Outcome.Shimmy && lastOutcome.Outcome != GameplayEnums.Outcome.WhiffPunish)
+                return;
             float rotationSpeed = 0f;
             if (lastOutcome.P1_Scores)
                 rotationSpeed += 20f;

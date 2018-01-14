@@ -145,26 +145,7 @@ public class GameState {
     {
         P1_CState = new CharacterState(_other.P1_CState);
         P2_CState = new CharacterState(_other.P2_CState);
-
-
-        //P1_Position = _other.P1_Position;
-        //P2_Position = _other.P2_Position;
-        //P1_StateFrames = _other.P1_StateFrames;
-        //P2_StateFrames = _other.P2_StateFrames;
-        //P1_State = _other.P1_State;
-        //P2_State = _other.P2_State;
-        //P1_Hitboxes = new List<Hitbox_Gameplay>();
-        //P2_Hitboxes = new List<Hitbox_Gameplay>();
-        //foreach (Hitbox_Gameplay hbg in _other.P1_Hitboxes)
-        //{
-        //    P1_Hitboxes.Add(new Hitbox_Gameplay(hbg));
-        //}
-        //foreach (Hitbox_Gameplay hbg in _other.P2_Hitboxes)
-        //{
-        //    P2_Hitboxes.Add(new Hitbox_Gameplay(hbg));
-        //}
-        //P1_Gauge = _other.P1_Gauge;
-        //P2_Gauge = _other.P2_Gauge;
+        
 
         RemainingHitstop = _other.RemainingHitstop;
         RemainingTime = _other.RemainingTime;
@@ -189,20 +170,6 @@ public class MatchState
     //    }
     //}
     public int P2_Score;
-    //{
-    //    get
-    //    {
-    //        int sum = 0;
-    //        foreach (MatchOutcome mo in Outcomes)
-    //        {
-    //            if (mo.P2_Scores)
-    //                ++sum;
-    //        }
-    //        return sum;
-    //    }
-    //}
-    //public List<GameplayEnums.Outcome> P1_Outcomes;
-    //public List<GameplayEnums.Outcome> P2_Outcomes;
 
     public List<MatchOutcome> Outcomes;
     public bool GameOver;
@@ -211,8 +178,6 @@ public class MatchState
     {
         P1_Score = 0;
         P2_Score = 0;
-        //P1_Outcomes = new List<GameplayEnums.Outcome>();
-        //P2_Outcomes = new List<GameplayEnums.Outcome>();
         GameOver = false;
         Outcomes = new List<MatchOutcome>();
     }

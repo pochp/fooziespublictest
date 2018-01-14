@@ -39,16 +39,19 @@ public class ApplicationStateManager
     public void SetMainMenu()
     {
         m_currentApplicationState = MainMenu.CreateMainMenu();
+        GameManager.Instance.SoundManager.SetMenuAudio();
     }
 
     public void SetCharacterSelectScreen(Match.SetData _setData)
     {
         m_currentApplicationState = CharacterSelectScreen.GetCharacterSelectScreen(_setData);
+        GameManager.Instance.SoundManager.SetMenuAudio();
     }
 
     public void SetGameplayState(Match.SetData _setData)
     {
         m_currentApplicationState = Gameplay.GameplayState.CreateGameplayState(_setData, m_gameplayRenderer);
+        GameManager.Instance.SoundManager.SetGameplayAudio();
     }
 
 

@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 8b9cd857c367265428171dadb6d03091
+timeCreated: 1515893544
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - BattleTheme1: {fileID: 8300000, guid: 9cc81d7794611594d8799cc77453e121, type: 3}
+  - MenuTheme1: {fileID: 8300000, guid: 6c01f4f780237314f92b0a59c9956911, type: 3}
+  - Counterhit: {fileID: 8300000, guid: 5f42d1d4e2dc11748805af06896b1689, type: 3}
+  - Feet: {fileID: 8300000, guid: 1ad293e16370b84489792fa193687e87, type: 3}
+  - Shimmy: {fileID: 8300000, guid: f7c124ca5e79b914fa2d2c6f9bb964ee, type: 3}
+  - StrayHit: {fileID: 8300000, guid: d13baee52f96f314f93f8bf66c303ab8, type: 3}
+  - Throw: {fileID: 8300000, guid: 40dd7db8e81ba684eacc4c3a96023b66, type: 3}
+  - TimeOut: {fileID: 8300000, guid: c2b97059dce2ab44a941abec639021e6, type: 3}
+  - Trade: {fileID: 8300000, guid: b03da7bceb864c548b6367a0a5a53616, type: 3}
+  - WhiffPunish: {fileID: 8300000, guid: a6521ceeab843434c965b10c566b5bce, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

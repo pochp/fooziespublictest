@@ -49,7 +49,11 @@ namespace Assets.Menus
 
         public override string GetDebugInfo()
         {
-            return base.GetDebugInfo();
+            return base.GetDebugInfo() + Environment.NewLine + Environment.NewLine  +
+                 Environment.NewLine + Environment.NewLine
+                 + "Updated versions coming soon." + Environment.NewLine + 
+                 "You can reach me on twitter @pochp_";
+       
         }
     }
 }
