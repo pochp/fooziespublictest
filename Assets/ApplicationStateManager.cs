@@ -7,7 +7,11 @@ using Assets.Menus;
 public class ApplicationStateManager
 {
     private ApplicationState m_currentApplicationState;
-    private GameplayRenderer m_gameplayRenderer;
+
+    private Renderers m_renderers;
+
+
+
     static public ApplicationStateManager GetInstance()
     {
         if (m_instance == null)
@@ -19,38 +23,46 @@ public class ApplicationStateManager
 
     private ApplicationStateManager()
     {
-        m_currentApplicationState = MainMenu.CreateMainMenu();
+        m_currentApplicationState = null;//MainMenu.CreateMainMenu(m_renderers.MainMenuR);
     }
 
     public void UpdateCurrentState(Inputs _inputs)
     {
         if(m_currentApplicationState == null)
         {
-            m_currentApplicationState = MainMenu.CreateMainMenu();
+            m_currentApplicationState = MainMenu.CreateMainMenu(m_renderers.MainMenuR);
         }
         m_currentApplicationState.Update(_inputs);
     }
 
-    public void InitManager(GameplayRenderer _renderer)
+    public void InitManager(Renderers _renderers)
     {
-        m_gameplayRenderer = _renderer;
+        m_renderers = _renderers;
+    }
+
+    private void SetCurrentApplicationState(ApplicationState _changeTo)
+    {
+        if(m_currentApplicationState!=null)
+            m_currentApplicationState.StateRenderer.DisableRendering();
+        m_currentApplicationState = _changeTo;
+        m_currentApplicationState.StateRenderer.EnableRendering();
     }
 
     public void SetMainMenu()
     {
-        m_currentApplicationState = MainMenu.CreateMainMenu();
+        SetCurrentApplicationState(MainMenu.CreateMainMenu(m_renderers.MainMenuR));
         GameManager.Instance.SoundManager.SetMenuAudio();
     }
 
     public void SetCharacterSelectScreen(Match.SetData _setData)
     {
-        m_currentApplicationState = CharacterSelectScreen.GetCharacterSelectScreen(_setData);
+        SetCurrentApplicationState(CharacterSelectScreen.GetCharacterSelectScreen(_setData, m_renderers.CharacterSelectR));
         GameManager.Instance.SoundManager.SetMenuAudio();
     }
 
     public void SetGameplayState(Match.SetData _setData)
     {
-        m_currentApplicationState = Gameplay.GameplayState.CreateGameplayState(_setData, m_gameplayRenderer);
+        SetCurrentApplicationState(Gameplay.GameplayState.CreateGameplayState(_setData, m_renderers.GameplayR));
         GameManager.Instance.SoundManager.SetGameplayAudio();
     }
 

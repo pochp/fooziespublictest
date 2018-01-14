@@ -17,6 +17,8 @@ using FooziesConstants;
 public class GameLoop : MonoBehaviour {
 
     public GameplayRenderer GameplayRendererObject;
+    public MenuRenderer MainMenuRenderer;
+    public MenuRenderer CharacterSelectRenderer;
 
     public bool P1_Joystick = true;
     public bool P2_Joystick = false;
@@ -26,13 +28,22 @@ public class GameLoop : MonoBehaviour {
 
     private void Awake()
     {
+        deltaTime = 0;
+        ApplicationStateManager.GetInstance().InitManager(CreateRenderers());
         ApplicationStateManager.GetInstance().SetMainMenu();
     }
 
     // Use this for initialization
     void Start() {
-        deltaTime = 0;
-        ApplicationStateManager.GetInstance().InitManager(GameplayRendererObject);
+    }
+
+    private Renderers CreateRenderers()
+    {
+        Renderers renderers = new Renderers();
+        renderers.GameplayR = GameplayRendererObject;
+        renderers.CharacterSelectR = CharacterSelectRenderer;
+        renderers.MainMenuR = MainMenuRenderer;
+        return renderers;
     }
 
     // Update is called once per frame

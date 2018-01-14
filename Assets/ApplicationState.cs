@@ -6,6 +6,7 @@ using System.Text;
 public abstract class ApplicationState
 {
     public abstract void Update(Inputs _inputs);
+    public IRenderer StateRenderer;
 
     public virtual string GetDebugInfo()
     {

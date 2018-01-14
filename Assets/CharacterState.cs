@@ -67,6 +67,11 @@ public class CharacterState
         }
     }
 
+    public string GetCharacterName()
+    {
+        return SelectedCharacter.GetCharacterName();
+    }
+
     public GameplayEnums.CharacterState GetCharacterAction(SinglePlayerInputs _inputs, SinglePlayerInputs _previousInputs)
     {
         if (_inputs.C && !_previousInputs.C)

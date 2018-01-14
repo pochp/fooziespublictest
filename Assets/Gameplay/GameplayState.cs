@@ -16,7 +16,6 @@ namespace Gameplay
 
     public class GameplayState : ApplicationState
     {
-
         public GameplayRenderer GameplayRendererObject;
         private GameState m_previousState;
         public MatchState Match;
@@ -29,6 +28,7 @@ namespace Gameplay
         {
             GameplayState gs = new GameplayState(_setData);
             gs.GameplayRendererObject = _renderer;
+            gs.StateRenderer = _renderer;
             return gs;
         }
 
@@ -169,7 +169,7 @@ namespace Gameplay
 
             //string splash = CurrentSplashState.CurrentState.ToString() + CurrentSplashState.FramesRemaining.ToString();
 
-            return score;
+            return "";//score;
 
             //GUI.TextArea(new Rect(10, 10, Screen.width - 10, Screen.height / 2), score + sweepdebug);
         }

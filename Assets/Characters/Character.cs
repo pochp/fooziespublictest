@@ -69,4 +69,6 @@ public abstract class Character
     {
 
     }
+
+    public abstract string GetCharacterName();
 }

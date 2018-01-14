@@ -47,4 +47,8 @@ public class Vanilla : Character
     {
 
     }
+    public override string GetCharacterName()
+    {
+        return "Vanilla";
+    }
 }

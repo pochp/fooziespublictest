@@ -92,4 +92,9 @@ class Dash : Character
     {
         m_state = DashState.Inactive;
     }
+
+    public override string GetCharacterName()
+    {
+        return "Dash";
+    }
 }

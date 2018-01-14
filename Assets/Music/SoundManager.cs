@@ -78,6 +78,7 @@ public class SoundManager : MonoBehaviour {
         BgmSource.Play();
         BgmSource.loop = true;
         BgmSource.time = 0f;
+        BgmSource.volume = 1f;
         m_currentBgmType = BgmType.Battle;
     }
 
@@ -90,6 +91,7 @@ public class SoundManager : MonoBehaviour {
         BgmSource.Play();
         BgmSource.loop = true;
         BgmSource.time = 2f;
+        BgmSource.volume = 0.7f;
         m_currentBgmType = BgmType.Menu;
     }
 

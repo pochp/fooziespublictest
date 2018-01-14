@@ -115,4 +115,8 @@ public class Sweep : Character
     {
         m_state = SweepState.Inactive;
     }
+    public override string GetCharacterName()
+    {
+        return "Sweep";
+    }
 }

@@ -13,12 +13,12 @@ namespace Assets.Menus
         private SetData m_currentSetData;
 
 
-        public static CharacterSelectScreen GetCharacterSelectScreen(SetData _currentSetData)
+        public static CharacterSelectScreen GetCharacterSelectScreen(SetData _currentSetData, IRenderer _renderer)
         {
             List<MenuItem> items = new List<MenuItem>();
             items.Add(new MenuItem(STR_SWEEP, 0, 0));
             items.Add(new MenuItem(STR_DASH, 1, 0));
-            return new CharacterSelectScreen(items, _currentSetData);
+            return new CharacterSelectScreen(items, _currentSetData, _renderer);
         }
 
         protected override void HandleMenuResult(MenuResult _result)
@@ -38,7 +38,7 @@ namespace Assets.Menus
             }
         }
 
-        private CharacterSelectScreen(List<MenuItem> _items, SetData _currentSetData) : base(_items)
+        private CharacterSelectScreen(List<MenuItem> _items, SetData _currentSetData, IRenderer _renderer) : base(_items, _renderer)
         {
             m_currentSetData = _currentSetData;
             P1.SelectedItem = Items.First(o => o.ItemName == GetMatchingCharacterName(m_currentSetData.P1_SelectedCharacter));

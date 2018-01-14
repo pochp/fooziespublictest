@@ -15,13 +15,16 @@ namespace Assets.Menus
         private SinglePlayerInputs m_lastInputsP1;
         private SinglePlayerInputs m_lastInputsP2;
 
-        protected Menu(List<MenuItem> _items)
+        private MenuRenderer m_renderer;
+
+        protected Menu(List<MenuItem> _items, IRenderer _renderer)
         {
             Items = _items;
             P1 = new PlayerInMenu(_items.First());
             P2 = new PlayerInMenu(_items.First());
             m_lastInputsP1 = null;
             m_lastInputsP2 = null;
+            StateRenderer = _renderer;
         }
 
         public override void Update(Inputs _inputs)

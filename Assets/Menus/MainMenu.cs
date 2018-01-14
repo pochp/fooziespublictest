@@ -9,16 +9,16 @@ namespace Assets.Menus
     {
         public const string STR_CHARACTERSELECT = "CharacterSelect";
 
-        private MainMenu(List<MenuItem> _items) : base(_items)
+        private MainMenu(List<MenuItem> _items, IRenderer _renderer) : base(_items, _renderer)
         {
 
         }
 
-        public static MainMenu CreateMainMenu()
+        public static MainMenu CreateMainMenu(IRenderer _renderer)
         {
             List<MenuItem> items = new List<MenuItem>();
             items.Add(new MenuItem(STR_CHARACTERSELECT, 0, 0));
-            MainMenu mm = new MainMenu(items);
+            MainMenu mm = new MainMenu(items, _renderer);
             return mm;
         }
 
