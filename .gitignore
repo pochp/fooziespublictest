@@ -4,6 +4,14 @@ Library/
 Temp/
 Builds/
 testbuild_Data/
+Assets/Rewired/DevTools/
+Assets/Rewired/Documentation/
+Assets/Rewired/Examples/
+Assets/Rewired/Extras/
+Assets/Rewired/Integration/
+Assets/Rewired/Internal/Assets/
+Assets/Rewired/Internal/Libraries/
+Assets/Rewired/Internal/Scrpits/
 *.csproj
 *.pidb
 *.unityproj
