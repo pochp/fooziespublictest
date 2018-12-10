@@ -135,7 +135,7 @@
     	<div class="main-body">
 	        <div class="logo"><a href="http://guavaman.com/projects/rewired" title="Rewired"><img src="files/images/rewired-logo.png" width="173" height="139" alt="Rewired" /></a></div>
                      
-            <h1>
+          <h1>
             <!-- InstanceBeginEditable name="PageHeader" -->Troubleshooting <!-- InstanceEndEditable -->
             </h1>
             
@@ -221,9 +221,10 @@
     <p>&nbsp;</p>
     <hr />
     <h3><a name="debug-information" id="debug-information"></a>Debug Information: How to find the source of the problem</h3>
-    <p><img src="files/images/inputmanager_inspector_debug_info.png" alt="" class="right" />You can easily determine why something is not working by looking at the Player, Joystick, Controller Map, and other objects in the Debug Information foldout in the <a href="InputManager.html#inspector">Rewired Input Manager inspector</a>. This shows a ton of useful information allowing you to visualize most objects in the system at runtime. For example, you can see if a Joystick has been assigned to a Player  or view which Joystick Maps have been assigned and enabled.    </p>
+    <p>You can easily determine why something is not working by looking at the Player, Joystick, Controller Map, and other objects in the Debug Information foldout in the <a href="InputManager.html#inspector">Rewired Input Manager inspector</a>. This shows a ton of useful information allowing you to visualize most objects in the system at runtime. For example, you can see if a Joystick has been assigned to a Player  or view which Joystick Maps have been assigned and enabled.</p>
+    <p><img src="files/images/inputmanager_inspector_debug_info.png" /></p>
     <p><strong>Prefab Method:<br />
-  </strong>For game builds where you do not have access to the inspector, you can use the prefab in Assets/Rewired/DevTools/DebugInformation. Drag this prefab into your scene and build. It will display on screen the same information shown in the Debug Information foldout in the inspector. You can use the mouse or the touch screen to unfold the various items to find the information you want.</p>
+    </strong>For game builds where you do not have access to the inspector, you can use the prefab in Assets/Rewired/DevTools/DebugInformation. Drag this prefab into your scene and build. It will display on screen the same information shown in the Debug Information foldout in the inspector. You can use the mouse or the touch screen to unfold the various items to find the information you want.</p>
 <p><strong>Scripting Method:</strong><br />
   You can also get this information by using a little bit of debug code. This code will show all Joysticks assigned to each Player and all mappings in each Controller Map. You will be able to tell if a Joystick is assigned to a particular Player, if any Controller Maps were loaded for that Joystick, whether or not those Controller Maps are enabled, and the what Action is bound to each element. There are many more members in each of the <a href="http://guavaman.com/projects/rewired/docs/api-reference/html/T_Rewired_Player.htm">Player</a>, <a href="http://guavaman.com/projects/rewired/docs/api-reference/html/T_Rewired_Joystick.htm">Joystick</a>, <a href="http://guavaman.com/projects/rewired/docs/api-reference/html/T_Rewired_JoystickMap.htm">JoystickMap</a>, and <a href="http://guavaman.com/projects/rewired/docs/api-reference/html/T_Rewired_ActionElementMap.htm">ActionElementMap</a> classes that you can get useful information from.</p>
     <pre class="code">
@@ -841,7 +842,7 @@ Int64* args, IntPtr method)
         
     </div>
   <div class="footer clearfix">
-   	<p class="left">Copyright &copy;2014-2018 <a href="http://guavaman.com" title="Guavaman Enterprises">Guavaman Enterprises</a>. All rights reserved. No materials may be reproduced without permission.</p>
+   	<p class="left">Copyright &copy;2014-2016 <a href="http://guavaman.com" title="Guavaman Enterprises">Guavaman Enterprises</a>. All rights reserved. No materials may be reproduced without permission.</p>
   	<p class="right"><a href="http://guavaman.com/projects/rewired" title="Return to Rewired Website">Return to Rewired Website</a></p>
   </div>
   <!-- end .content --></div>

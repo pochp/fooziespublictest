@@ -38,7 +38,10 @@ namespace Assets.Menus
             if (InputMappingInCourse)
             {
                 if(RewiredJoystickAssigner.AssignPlayerIds())
+                {
                     InputMappingInCourse = false;
+                    System.Threading.Thread.Sleep(300);
+                }
                 res = MenuResult.Remain;
             }
             else

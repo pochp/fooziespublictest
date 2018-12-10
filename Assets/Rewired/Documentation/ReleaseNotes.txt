@@ -1,15 +1,7 @@
-1.1.21.1:
-  
-    Changes:
-      - Updated Bolt integration for Bolt 1.4.0f11.
-      
-    Bug Fixes:
-      - Fixed exception thrown on PS4 and Xbox One platforms when calling ReInput.mapping.GetJoystickMapInstance(guid, ...) method.
-
 1.1.21.0:
 
     Changes:
-      - Added Simple Combined Keyboard Mouse Remapping example.
+      - Added Combined Keyboard and Mouse Mapping example.
 
     API Changes:
       - Added InputMapper.mappingContext property.

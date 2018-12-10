@@ -321,21 +321,21 @@ class RewiredJoystickAssigner
         var playerId = p1 ? assigner.P1_PlayerId : assigner.P2_PlayerId;
         if(playerId == -1)
         {
-            return "Press Any Button On the Joystick";
+            return "Press Any Attack Button On the Joystick";
         }
         if(playerId == -2)
         {
             return "Please Wait";
         }
         Player player = ReInput.players.GetPlayer(playerId);
-        var stick = player.controllers.Controllers.FirstOrDefault();
+        var stick = player.controllers.Joysticks.FirstOrDefault();
         if(stick == null)
         {
             return "No joystick found for player";
         }
         else
         {
-            return stick.hardwareName;
+            return stick.name;
         }
     }
 }

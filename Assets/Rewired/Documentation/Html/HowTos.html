@@ -157,7 +157,6 @@
       <li><a href="#get-element-name-for-action">Displaying a button/axis/key name to the user for an Action</a></li>
       <li><a href="#display-glyph-for-action">Displaying a glyph for a Joystick element mapped to an Action</a></li>
       <li><a href="#display-glyph-for-active-elements">Displaying a glyph for the currently active Joystick elements</a></li>
-      <li><a href="#get-mappings-for-joystick-not-attached">Getting Controller Maps for a Joystick not currently attached</a></li>
       <li><a href="#get-contributing-input-sources">Getting contributing input sources for an Action</a></li>
       <li><a href="#last-used-controller">Determining which Controller was last used</a></li>
       <li><a href="#is-controller-gamepad">Determining if a Controller is a Gamepad</a></li>
@@ -1261,15 +1260,6 @@ namespace Rewired.Demos {
     }
 }</pre>
     <p>&nbsp;</p>
-<hr />
-    <h3><a name="get-mappings-for-joystick-not-attached" id="get-mappings-for-joystick-not-attached"></a>Getting Controller Maps for a Joystick not currently attached</h3>
-    <p>The previous methods for displaying glyphs and other mapping information require that the Joystick be attached to the system in order to look up the information. Sometimes you may want to display glyphs or other information about mappings for Joysticks that are not currently connected. The only way to do this is by loading Controller Map instances using the following methods to determine what the default mappings are for the controller in question when it is not present:</p>
-    <p>Joystick Maps:<br />
-      <a href="http://guavaman.com/projects/rewired/docs/api-reference/html/Overload_Rewired_ReInput_MappingHelper_GetJoystickMapInstance.htm">ReInput.mapping.GetJoystickMapInstance</a></p>
-    <p>Controller Template Maps:<br />
-      <a href="http://guavaman.com/projects/rewired/docs/api-reference/html/Overload_Rewired_ReInput_MappingHelper_GetControllerTemplateMapInstance.htm">ReInput.mapping.GetControllerTemplateMapInstance</a></p>
-    <p>Use the information from the returned maps to determine the mappings and display the information.</p>
-    <p>&nbsp;</p>
     <hr />
     <h3><a name="get-contributing-input-sources" id="get-contributing-input-sources"></a>Getting contributing input sources for an Action</h3>
 <p>You can get information about all the input sources currently contributing to the value of an <a href="Actions.html">Action</a> in a <a href="Players.html">Player</a>. There are several methods available to get this information:</p>
@@ -1484,7 +1474,7 @@ if(player.GetButtonTimedPressUp("Action", 0f, 0.7f)) { <span class="comment">// 
   <li><a href="http://guavaman.com/projects/rewired/docs/api-reference/html/Overload_Rewired_Player_GetButtonTimePressed.htm">Player.GetButtonTimePressed</a>: Gets the length of time in seconds that a button has been continuously held down. Returns 0 if the button is not currently pressed.</li>
   <li><a href="http://guavaman.com/projects/rewired/docs/api-reference/html/Overload_Rewired_Player_GetButtonTimeUnpressed.htm">Player.GetButtonTimeUnpressed</a>: Gets the length of time in seconds that a button has not been pressed. Returns 0 if the button is currently pressed.</li>
   </ul>
-<p><strong><a name="button-press-types-negative-buttons" id="button-press-types-negative-buttons"></a>Negative Buttons:</strong></p>
+<p><strong>Negative Buttons:</strong></p>
 <p>Each of the methods above also has a corresponding Negative Button method which is named the same except with NegativeButton in place of Button. These serve to allow you to use axes as buttons and will trigger when the negative side of the axis is activated while the standard Button version will trigger only when the positive side of the axis is activated. However, it is usually easier to just map each pole of the axis to a seperate Action (split axis) so that each Action can just be queried with GetButton.</p>
 <p>If you want all GetButton calls to return True when either the positive or negative side of the axis is activated, enable the option <a href="RewiredEditor.html#settings-activate-action-buttons-on-negative-value">&quot;Activate Action Buttons on Negative Values&quot; in the Rewired Editor</a>.</p>
 <p>&nbsp;</p>
@@ -2600,7 +2590,7 @@ class PS4Test {
         
     </div>
   <div class="footer clearfix">
-   	<p class="left">Copyright &copy;2014-2018 <a href="http://guavaman.com" title="Guavaman Enterprises">Guavaman Enterprises</a>. All rights reserved. No materials may be reproduced without permission.</p>
+   	<p class="left">Copyright &copy;2014-2016 <a href="http://guavaman.com" title="Guavaman Enterprises">Guavaman Enterprises</a>. All rights reserved. No materials may be reproduced without permission.</p>
   	<p class="right"><a href="http://guavaman.com/projects/rewired" title="Return to Rewired Website">Return to Rewired Website</a></p>
   </div>
   <!-- end .content --></div>

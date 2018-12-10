@@ -21,4 +21,5 @@ Assets/Rewired/Internal/Scrpits/
 *.exe
 *.fbx
 *.mp3
+*.dll
 /obj
