@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using Rewired;
+using System.Linq;
 
 class InputReaderRewired
 {
@@ -61,15 +62,53 @@ class InputReaderRewired
     static public SinglePlayerInputs GetInputs(bool _p1)
     {
         Log();
-        Player player = ReInput.players.GetPlayer(RewiredJoystickAssigner.GetAssigner().GetPlayerId(_p1));
-
         SinglePlayerInputs inputs = new SinglePlayerInputs();
+        var playerId = RewiredJoystickAssigner.GetPlayerId(_p1);
+        if (playerId < 0)
+            return inputs;
+        Player player = ReInput.players.GetPlayer(playerId);
+        
         float h;
         float v;
 
-        h = player.GetAxisRaw("Move_Horizontal");
-        v = player.GetAxisRaw("Move_Vertical");
+        float diag_TL_BR = player.GetAxisRaw("Move_Diagonal_TL_BR");
+        float diag_TR_BL = player.GetAxisRaw("Move_Diagonal_TR_BL");
+
+        //adjusting because d-pads are sometimes considered as HAT inputs, where the diagonals require their own axis....... I hate this
+        if(Mathf.Abs(diag_TL_BR) > 0.1)
+        {
+            if(diag_TL_BR < 0)
+            {
+                h = -1f;
+                v = 1f;
+            }
+            else
+            {
+                h = 1f;
+                v = -1f;
+            }
+        }
+        else if(Mathf.Abs(diag_TR_BL) > 0.1)
+        {
+            if (diag_TR_BL < 0)
+            {
+                h = 1f;
+                v = 1f;
+            }
+            else
+            {
+                h = -1f;
+                v = -1f;
+            }
+        }
+        else
+        {
+            h = player.GetAxisRaw("Move_Horizontal");
+            v = player.GetAxisRaw("Move_Vertical");
+        }
         inputs.JoystickDirection = GetNumpadDirection(h, v, _p1);
+
+
         inputs.A = player.GetButton("Button_A");
         inputs.B = player.GetButton("Button_B");
         inputs.C = player.GetButton("Button_C");
@@ -209,9 +248,22 @@ class InputReaderRewired
 
 class RewiredJoystickAssigner
 {
+    enum AssigningState { P1, P2, AllSet};
+    AssigningState assigningState
+    {
+        get
+        {
+            if (P1_PlayerId == -1)
+                return AssigningState.P1;
+            if (P2_PlayerId == -1)
+                return AssigningState.P2;
+            return AssigningState.AllSet;
+        }
+    }
+
     static private RewiredJoystickAssigner assigner;
-    public int P1_PlayerId;
-    public int P2_PlayerId;
+    private int P1_PlayerId;
+    private int P2_PlayerId;
     private RewiredJoystickAssigner()
     {
         P1_PlayerId = 0;
@@ -223,8 +275,67 @@ class RewiredJoystickAssigner
             assigner = new RewiredJoystickAssigner();
         return assigner;
     }
-    public int GetPlayerId(bool p1)
+    static public int GetPlayerId(bool p1)
     {
-        return p1 ? P1_PlayerId :  P2_PlayerId;
+        var instance = GetAssigner();
+        return p1 ? instance.P1_PlayerId : instance.P2_PlayerId;
+    }
+
+    static public void UnbindPlayerIds()
+    {
+        var assigner = GetAssigner();
+        assigner.P1_PlayerId = -1;
+        assigner.P2_PlayerId = -2;
+    }
+
+    static public bool AssignPlayerIds()
+    {
+        var assigner = GetAssigner();
+        if (assigner.assigningState == AssigningState.AllSet)
+            return false;
+        int id;
+        foreach (var p in ReInput.players.Players)
+        {
+            if (p.GetAnyButton())
+            {
+                id = p.id;
+                if(assigner.assigningState == AssigningState.P1)
+                {
+                    assigner.P1_PlayerId = p.id;
+                    assigner.P2_PlayerId = -1;
+                    return false;
+                }
+                else if(assigner.assigningState == AssigningState.P2 && assigner.P1_PlayerId != p.id)//so you don't bind the same device twice
+                {
+                    assigner.P2_PlayerId = p.id;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    static public string GetInputName(bool p1)
+    {
+        var assigner = GetAssigner();
+        var playerId = p1 ? assigner.P1_PlayerId : assigner.P2_PlayerId;
+        if(playerId == -1)
+        {
+            return "Press Any Button On the Joystick";
+        }
+        if(playerId == -2)
+        {
+            return "Please Wait";
+        }
+        Player player = ReInput.players.GetPlayer(playerId);
+        var stick = player.controllers.Controllers.FirstOrDefault();
+        if(stick == null)
+        {
+            return "No joystick found for player";
+        }
+        else
+        {
+            return stick.hardwareName;
+        }
     }
 }

@@ -29,7 +29,22 @@ namespace Assets.Menus
 
         public override void Update(Inputs _inputs)
         {
-            MenuResult res = UpdateMenu(_inputs.P1_Inputs, _inputs.P2_Inputs);
+            if(_inputs.Common_Inputs.F4)
+            {
+                InputMappingInCourse = true;
+                RewiredJoystickAssigner.UnbindPlayerIds();
+            }
+            MenuResult res;
+            if (InputMappingInCourse)
+            {
+                if(RewiredJoystickAssigner.AssignPlayerIds())
+                    InputMappingInCourse = false;
+                res = MenuResult.Remain;
+            }
+            else
+            {
+                res = UpdateMenu(_inputs.P1_Inputs, _inputs.P2_Inputs);
+            }
             HandleMenuResult(res);
         }
 

@@ -68,7 +68,7 @@ namespace Assets.Menus
 
         public override string GetDebugInfo()
         {
-            string info = "Character Select Screen";
+            string info = base.GetDebugInfo() + Environment.NewLine;//"Character Select Screen";
             info += Environment.NewLine + "P1 Selection : " + P1.SelectedItem.ItemName;
             if (P1.SelectionState == PlayerInMenu.SelectionStates.Confirmed)
                 info += " <>";

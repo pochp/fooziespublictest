@@ -58,18 +58,29 @@ public class GameLoop : MonoBehaviour {
 
 
         //1. Checks for inputs : done before
-        SinglePlayerInputs p1_inputs = GetInputs(true);
-        SinglePlayerInputs p2_inputs = GetInputs(false);
-
-        ApplicationStateManager.GetInstance().UpdateCurrentState(new Inputs(p1_inputs, p2_inputs));
+        ApplicationStateManager.GetInstance().UpdateCurrentState(GetAllInputs());
 
     }
 
+    private Inputs GetAllInputs()
+    {
+        SinglePlayerInputs p1_inputs = GetInputs(true);
+        SinglePlayerInputs p2_inputs = GetInputs(false);
+        CommonInputs commonInputs = GetCommonInputs();
+        return new Inputs(p1_inputs, p2_inputs, commonInputs);
+    }
 
+    private CommonInputs GetCommonInputs()
+    {
+        CommonInputs ci = new CommonInputs();
+        ci.F4 = Input.GetKeyDown(KeyCode.F4);
+        return ci;
+    }
 
     private SinglePlayerInputs GetInputs(bool _p1)
     {
         return InputReaderRewired.GetInputs(_p1);
+        //not rewired version, default unity input binding
         short direction = 5;
         SinglePlayerInputs inputs = new SinglePlayerInputs();
         float h;
