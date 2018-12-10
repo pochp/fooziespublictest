@@ -69,6 +69,7 @@ public class GameLoop : MonoBehaviour {
 
     private SinglePlayerInputs GetInputs(bool _p1)
     {
+        return InputReaderRewired.GetInputs(_p1);
         short direction = 5;
         SinglePlayerInputs inputs = new SinglePlayerInputs();
         float h;
