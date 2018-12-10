@@ -91,7 +91,7 @@ public class SoundManager : MonoBehaviour {
         BgmSource.Play();
         BgmSource.loop = true;
         BgmSource.time = 2f;
-        BgmSource.volume = 0.7f;
+        BgmSource.volume = 0.4f;
         m_currentBgmType = BgmType.Menu;
     }
 
