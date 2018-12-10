@@ -1,20 +1,20 @@
 fileFormatVersion: 2
 guid: 8b9cd857c367265428171dadb6d03091
-timeCreated: 1544411305
+timeCreated: 1544412570
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
   defaultReferences:
-  - BattleTheme1: {fileID: 8300000, guid: c2fd81d2e660adf4099489ed024ef188, type: 3}
-  - MenuTheme1: {fileID: 8300000, guid: 64dac51825c56e54fbcd8559ad921c38, type: 3}
-  - Counterhit: {fileID: 8300000, guid: c65cb6c8106bf01458956d822721dee3, type: 3}
-  - Feet: {fileID: 8300000, guid: e55dc13b435286b43afc037e81baf3f1, type: 3}
-  - Shimmy: {fileID: 8300000, guid: 82bcd19d032830049b6439e44ba17180, type: 3}
-  - StrayHit: {fileID: 8300000, guid: 3c63a6c9310faf9408707f711e633408, type: 3}
-  - Throw: {fileID: 8300000, guid: d4b4bd52229eee146bd2402e5dcae965, type: 3}
-  - TimeOut: {fileID: 8300000, guid: 0239feeee9cd7444792e40193e789884, type: 3}
-  - Trade: {fileID: 8300000, guid: 4e8b7dd1d6b7bf54a8d8d85f025552b4, type: 3}
-  - WhiffPunish: {fileID: 8300000, guid: 94bd2c5275eb1d3408b8c349af236035, type: 3}
+  - BattleTheme1: {fileID: 8300000, guid: 1b4d89e405afbc447b90922eb2e65c3e, type: 3}
+  - MenuTheme1: {fileID: 8300000, guid: e84e60fa4cf57484c85f33ee44de96f4, type: 3}
+  - Counterhit: {fileID: 8300000, guid: 22a9559f35dab114e895b6b1a02bbc71, type: 3}
+  - Feet: {fileID: 8300000, guid: d8c6297b4954ff54495fbfc7e0ceeb2b, type: 3}
+  - Shimmy: {fileID: 8300000, guid: c20e212d32e5b1e4585bc70be413ea71, type: 3}
+  - StrayHit: {fileID: 8300000, guid: d84978c2dc2bb2842ae9a660c6022f8d, type: 3}
+  - Throw: {fileID: 8300000, guid: 7d15bf3cd60d33049b1c83f7330fc617, type: 3}
+  - TimeOut: {fileID: 8300000, guid: 314b1bb339d1f9946b9dadb96c3fbf5c, type: 3}
+  - Trade: {fileID: 8300000, guid: 29573f8f188cc0243a59b25ff74e81ee, type: 3}
+  - WhiffPunish: {fileID: 8300000, guid: eec1802a848c30646b55af4c322ef385, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

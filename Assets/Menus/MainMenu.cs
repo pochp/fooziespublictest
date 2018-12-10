@@ -49,7 +49,8 @@ namespace Assets.Menus
 
         public override string GetDebugInfo()
         {
-            return base.GetDebugInfo() + Environment.NewLine + Environment.NewLine  +
+            return base.GetDebugInfo() + Environment.NewLine + Environment.NewLine +
+                 "Foozies Version 1.5" + Environment.NewLine +
                  Environment.NewLine + Environment.NewLine
                  + "Updated versions coming soon." + Environment.NewLine + 
                  "You can reach me on twitter @pochp_";
