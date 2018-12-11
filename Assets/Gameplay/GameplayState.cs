@@ -559,7 +559,15 @@ namespace Gameplay
 
             if (p1_hits_p2)
             {
-                if (DoesPlayerBlock(false, _currentState, _p2Inputs))
+                SetAttackAsConnectedWithOpponent(true, _currentState);
+                if (DoesPlayerArmor(false, _currentState))
+                {
+                    //set hitstop
+                    _currentState.RemainingHitstop = GameplayConstants.BLOCK_HITSTOP;
+                    //play sfx
+                    GameManager.Instance.SoundManager.PlaySfx(SoundManager.SFX.Block);
+                }
+                else if (DoesPlayerBlock(false, _currentState, _p2Inputs))
                 {
                     //set p2 to be in blockstun
                     _currentState.P2_State = GameplayEnums.CharacterState.Blockstun;
@@ -582,7 +590,15 @@ namespace Gameplay
             }
             if (p2_hits_p1)
             {
-                if (DoesPlayerBlock(true, _currentState, _p1Inputs))
+                SetAttackAsConnectedWithOpponent(false, _currentState);
+                if (DoesPlayerArmor(true, _currentState))
+                {
+                    //set hitstop
+                    _currentState.RemainingHitstop = GameplayConstants.BLOCK_HITSTOP;
+                    //play sfx
+                    GameManager.Instance.SoundManager.PlaySfx(SoundManager.SFX.Block);
+                }
+                else if (DoesPlayerBlock(true, _currentState, _p1Inputs))
                 {
                     //set p2 to be in blockstun
                     _currentState.P1_State = GameplayEnums.CharacterState.Blockstun;
@@ -672,10 +688,29 @@ namespace Gameplay
             return res;
         }
 
+        private void SetAttackAsConnectedWithOpponent(bool _p1, GameState _currentState)
+        {
+            CharacterState cstate = _p1 ? _currentState.P1_CState : _currentState.P2_CState;
+            cstate.AttackConnected = true;
+        }
+
+        private bool DoesPlayerArmor(bool _p1, GameState _currentState)
+        {
+            CharacterState cstate = _p1 ? _currentState.P1_CState : _currentState.P2_CState;
+            return cstate.HasArmor();
+        }
+
+        private bool CanPlayerBreakThrow(bool _p1, GameState _currentState)
+        {
+            CharacterState cstate = _p1 ? _currentState.P1_CState : _currentState.P2_CState;
+            return cstate.CanBreakThrow();
+        }
+
         private bool DoesPlayerBlock(bool _p1, GameState _currentState, SinglePlayerInputs _inputs)
         {
             if (!(_inputs.JoystickDirection == 1 || _inputs.JoystickDirection == 4 || _inputs.JoystickDirection == 7))
                 return false;
+
             GameplayEnums.CharacterState charState;
 
             Hitbox_Gameplay hitbox = _currentState.P1_CState.Hitboxes.Find(o => o.HitboxType == GameplayEnums.HitboxType.Hitbox_Attack);
@@ -709,22 +744,34 @@ namespace Gameplay
 
         private GameplayEnums.Outcome GetOutcomeFromOpponentState(CharacterState _charState)
         {
+            GameplayEnums.Outcome outcome;
             switch (_charState.State)
             {
                 case GameplayEnums.CharacterState.AttackActive:
                 case GameplayEnums.CharacterState.AttackStartup:
                 case GameplayEnums.CharacterState.ThrowActive:
                 case GameplayEnums.CharacterState.ThrowStartup:
-                    return GameplayEnums.Outcome.Counter;
+                    outcome = GameplayEnums.Outcome.Counter;
+                    break;
                 case GameplayEnums.CharacterState.AttackRecovery:
-                    return GameplayEnums.Outcome.WhiffPunish;
+                    outcome = GameplayEnums.Outcome.WhiffPunish;
+                    break;
                 case GameplayEnums.CharacterState.ThrowRecovery:
-                    return GameplayEnums.Outcome.Shimmy;
+                    outcome = GameplayEnums.Outcome.Shimmy;
+                    break;
                 case GameplayEnums.CharacterState.Special:
-                    return _charState.SelectedCharacter.GetOutcomeIfHit();
+                    outcome = _charState.SelectedCharacter.GetOutcomeIfHit();
+                    break;
                 default:
-                    return GameplayEnums.Outcome.StrayHit;
+                    outcome = GameplayEnums.Outcome.StrayHit;
+                    break;
             }
+            if(outcome == GameplayEnums.Outcome.WhiffPunish || outcome == GameplayEnums.Outcome.StrayHit)
+            {
+                if (_charState.AttackConnected)
+                    outcome = GameplayEnums.Outcome.Punish;
+            }
+            return outcome;
         }
 
         private GameplayEnums.Outcome GetOutcomeFromPlayerState(CharacterState _winner, GameplayEnums.Outcome _previousOutcome)

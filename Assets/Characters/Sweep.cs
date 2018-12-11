@@ -37,6 +37,8 @@ public class Sweep : Character
         m_state = SweepState.Startup;
         _character.Hitboxes.Add(_character.CreateHitbox(GameplayEnums.HitboxType.Hurtbox_Limb, HURTBOX_STARTUP));
         _character.SetCharacterHurtboxStanding(_character.Hitboxes);
+        _character.DisableThrowBreak = true;
+        _character.AttackConnected = false;
     }
 
     public override GameplayEnums.Outcome GetOutcomeIfHit()
@@ -63,7 +65,9 @@ public class Sweep : Character
                 _character.StateFrames = 0;
                 _character.Hitboxes.RemoveAll(o => o.HitboxType == GameplayEnums.HitboxType.Hitbox_Attack);
                 _character.ModifyHitbox(_character.Hitboxes, HURTBOX_WHIFF_EARLY);
-            }
+
+                    _character.DisableThrowBreak = false;
+                }
             break;
             case SweepState.Recovery:
                 if (_character.StateFrames > RECOVERY)

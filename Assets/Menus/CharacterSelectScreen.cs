@@ -10,6 +10,7 @@ namespace Assets.Menus
     {
         public const string STR_SWEEP = "Sweep";
         public const string STR_DASH = "Dash";
+        public const string STR_ARMOR = "Armor";
         private SetData m_currentSetData;
 
 
@@ -18,6 +19,7 @@ namespace Assets.Menus
             List<MenuItem> items = new List<MenuItem>();
             items.Add(new MenuItem(STR_SWEEP, 0, 0));
             items.Add(new MenuItem(STR_DASH, 1, 0));
+            items.Add(new MenuItem(STR_ARMOR, 2, 0));
             return new CharacterSelectScreen(items, _currentSetData, _renderer);
         }
 
@@ -51,6 +53,8 @@ namespace Assets.Menus
                 return STR_SWEEP;
             if (_char is Dash)
                 return STR_DASH;
+            if (_char is Armor)
+                return STR_ARMOR;
             return string.Empty;
         }
 
@@ -62,6 +66,8 @@ namespace Assets.Menus
                     return new Dash();
                 case STR_SWEEP:
                     return new Sweep();
+                case STR_ARMOR:
+                    return new Armor();
             }
             throw new Exception("No Character Selected");
         }

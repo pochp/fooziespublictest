@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 09cdaa1422df81b4683d71ea670577d5
-timeCreated: 1510023342
+timeCreated: 1544505465
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
@@ -31,6 +31,13 @@ MonoImporter:
   - TXT_GameOver: {fileID: 21300000, guid: cb7a76f55b12cb345a41e39edf330189, type: 3}
   - TXT_AnyButton: {fileID: 21300000, guid: c81217fc7d07a4244bc3e3047f7cf851, type: 3}
   - TXT_Feet: {fileID: 21300000, guid: 20737d27bf614ef4cbc47a94bb570891, type: 3}
+  - TXT_Punish: {fileID: 21300000, guid: c92a8cd033b66aa4cb910a43f9f8c791, type: 3}
+  - TXT_CharSelect: {instanceID: 0}
+  - TXT_MainMenu: {instanceID: 0}
+  - GameplayCanvas: {instanceID: 0}
+  - P1_CharName: {instanceID: 0}
+  - P2_CharName: {instanceID: 0}
+  - Timer: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

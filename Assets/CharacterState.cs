@@ -13,6 +13,12 @@ public class CharacterState
     public int Gauge;
     public bool FacingRight;
     public Character SelectedCharacter;
+
+    //atributes
+    public bool Armor;
+    public bool DisableThrowBreak;
+    public bool AttackConnected;
+
     public bool P1
     {
         get { return FacingRight; }
@@ -27,6 +33,9 @@ public class CharacterState
         Gauge = 0;
         FacingRight = _p1;
         SelectedCharacter = _selectedCharacter;
+        Armor = false;
+        DisableThrowBreak = false;
+        AttackConnected = false;
     }
 
     public CharacterState(CharacterState _toCopy)
@@ -42,6 +51,9 @@ public class CharacterState
         Gauge = _toCopy.Gauge;
         FacingRight = _toCopy.FacingRight;
         SelectedCharacter = _toCopy.SelectedCharacter.CopyCharacter();
+        Armor = _toCopy.Armor;
+        DisableThrowBreak = _toCopy.DisableThrowBreak;
+        AttackConnected = _toCopy.AttackConnected;
     }
 
     public void UpdateStateWithInputs(SinglePlayerInputs _inputs, SinglePlayerInputs _lastInputs, CharacterState _otherCharacter)
@@ -55,7 +67,7 @@ public class CharacterState
                 SetCharacterState(GetCharacterAction(_inputs, _lastInputs));
                 break;
             case GameplayEnums.CharacterState.BeingThrown:
-                if (_inputs.B && !_lastInputs.B)
+                if (_inputs.B && !_lastInputs.B && !DisableThrowBreak)
                 {
                     _otherCharacter.SetThrowBreak();
                     SetThrowBreak();
@@ -112,6 +124,7 @@ public class CharacterState
 
     public void SetCharacterState(GameplayEnums.CharacterState _state)
     {
+        ResetAttributes();
         State = _state;
         StateFrames = 0;
         switch (_state)
@@ -119,7 +132,8 @@ public class CharacterState
             case GameplayEnums.CharacterState.AttackStartup:
                 Hitboxes.Add(CreateHitbox(GameplayEnums.HitboxType.Hurtbox_Limb, GameplayConstants.HURTBOX_STARTUP));
                 SetCharacterHurtboxStanding(Hitboxes);
-
+                DisableThrowBreak = true;
+                AttackConnected = false;
                 //play sfx
                 GameManager.Instance.SoundManager.PlaySfx(SoundManager.SFX.Whiff);
                 break;
@@ -161,6 +175,7 @@ public class CharacterState
                     StateFrames = 0;
                     Hitboxes.RemoveAll(o => o.HitboxType == GameplayEnums.HitboxType.Hitbox_Attack);
                     ModifyHitbox(Hitboxes, GameplayConstants.HURTBOX_WHIFF_EARLY);
+                    DisableThrowBreak = false;
                 }
                 if (StateFrames == GameplayConstants.ATTACK_FULL_EXTEND)
                 {
@@ -336,5 +351,21 @@ public class CharacterState
     public void AddGauge(int _amount)
     {
         SelectedCharacter.AddGauge(this, _amount);
+    }
+
+    public bool HasArmor()
+    {
+        return Armor;
+    }
+
+    public bool CanBreakThrow()
+    {
+        return !DisableThrowBreak;
+    }
+
+    public void ResetAttributes()
+    {
+        Armor = false;
+        DisableThrowBreak = false;
     }
 }

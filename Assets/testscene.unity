@@ -766,6 +766,7 @@ MonoBehaviour:
   TXT_GameOver: {fileID: 21300000, guid: cb7a76f55b12cb345a41e39edf330189, type: 3}
   TXT_AnyButton: {fileID: 21300000, guid: c81217fc7d07a4244bc3e3047f7cf851, type: 3}
   TXT_Feet: {fileID: 21300000, guid: 20737d27bf614ef4cbc47a94bb570891, type: 3}
+  TXT_Punish: {fileID: 21300000, guid: c92a8cd033b66aa4cb910a43f9f8c791, type: 3}
   TXT_CharSelect: {fileID: 0}
   TXT_MainMenu: {fileID: 0}
   GameplayCanvas: {fileID: 230688535}
@@ -1242,16 +1243,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b9cd857c367265428171dadb6d03091, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BattleTheme1: {fileID: 8300000, guid: 9cc81d7794611594d8799cc77453e121, type: 3}
-  MenuTheme1: {fileID: 8300000, guid: 6c01f4f780237314f92b0a59c9956911, type: 3}
-  Counterhit: {fileID: 8300000, guid: 5f42d1d4e2dc11748805af06896b1689, type: 3}
-  Feet: {fileID: 8300000, guid: 1ad293e16370b84489792fa193687e87, type: 3}
-  Shimmy: {fileID: 8300000, guid: f7c124ca5e79b914fa2d2c6f9bb964ee, type: 3}
-  StrayHit: {fileID: 8300000, guid: d13baee52f96f314f93f8bf66c303ab8, type: 3}
-  Throw: {fileID: 8300000, guid: 40dd7db8e81ba684eacc4c3a96023b66, type: 3}
-  TimeOut: {fileID: 8300000, guid: c2b97059dce2ab44a941abec639021e6, type: 3}
-  Trade: {fileID: 8300000, guid: b03da7bceb864c548b6367a0a5a53616, type: 3}
-  WhiffPunish: {fileID: 8300000, guid: a6521ceeab843434c965b10c566b5bce, type: 3}
+  BattleTheme1: {fileID: 8300000, guid: 1b4d89e405afbc447b90922eb2e65c3e, type: 3}
+  MenuTheme1: {fileID: 8300000, guid: e84e60fa4cf57484c85f33ee44de96f4, type: 3}
+  Counterhit: {fileID: 8300000, guid: 22a9559f35dab114e895b6b1a02bbc71, type: 3}
+  Feet: {fileID: 8300000, guid: d8c6297b4954ff54495fbfc7e0ceeb2b, type: 3}
+  Shimmy: {fileID: 8300000, guid: c20e212d32e5b1e4585bc70be413ea71, type: 3}
+  StrayHit: {fileID: 8300000, guid: d84978c2dc2bb2842ae9a660c6022f8d, type: 3}
+  Throw: {fileID: 8300000, guid: 7d15bf3cd60d33049b1c83f7330fc617, type: 3}
+  TimeOut: {fileID: 8300000, guid: 314b1bb339d1f9946b9dadb96c3fbf5c, type: 3}
+  Trade: {fileID: 8300000, guid: 29573f8f188cc0243a59b25ff74e81ee, type: 3}
+  WhiffPunish: {fileID: 8300000, guid: eec1802a848c30646b55af4c322ef385, type: 3}
+  Hit: {fileID: 8300000, guid: 1ef96dbfdf098f745844b4b042d48bbc, type: 3}
+  Block: {fileID: 8300000, guid: 4662848fd32264945b65fb92dafa4c53, type: 3}
+  Whiff: {fileID: 8300000, guid: ead230a00218e7442a156cd7c054b268, type: 3}
+  ThrowBreak: {fileID: 8300000, guid: 6376571bdf19eb6419075d1f7f1f8012, type: 3}
+  Clash: {fileID: 8300000, guid: b55e50fc2bc6d4e4885b196dbb9f7515, type: 3}
 --- !u!4 &1484404100
 Transform:
   m_ObjectHideFlags: 0

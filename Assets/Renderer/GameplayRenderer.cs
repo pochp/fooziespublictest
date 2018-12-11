@@ -35,6 +35,7 @@ public class GameplayRenderer : MonoBehaviour, IRenderer {
     public Sprite TXT_GameOver;
     public Sprite TXT_AnyButton;
     public Sprite TXT_Feet;
+    public Sprite TXT_Punish;
     public Sprite TXT_CharSelect;
     public Sprite TXT_MainMenu;
 
@@ -182,6 +183,9 @@ public class GameplayRenderer : MonoBehaviour, IRenderer {
                 break;
             case GameplayEnums.Outcome.Sweep:
                 m_spriteList.TXT_Feet.Active = true;
+                break;
+            case GameplayEnums.Outcome.Punish:
+                m_spriteList.TXT_Punish.Active = true;
                 break;
         }
     }
@@ -414,7 +418,8 @@ public class SpriteList
     public SpriteRenderPair TXT_GameOver;
     public SpriteRenderPair TXT_AnyButton;
     public SpriteRenderPair TXT_Feet;
-    
+    public SpriteRenderPair TXT_Punish;
+
 
     public List<SpriteRenderPair> SplashSprites;
     public void HideAll()
@@ -449,6 +454,7 @@ public class SpriteList
         TXT_GameOver = SpriteRenderPair.CreateRenderPair(_gameplayRenderer.gameObject, _gameplayRenderer.TXT_GameOver, ScreenTop);
         TXT_AnyButton = SpriteRenderPair.CreateRenderPair(_gameplayRenderer.gameObject, _gameplayRenderer.TXT_AnyButton, ScreenBottom);
         TXT_Feet = SpriteRenderPair.CreateRenderPair(_gameplayRenderer.gameObject, _gameplayRenderer.TXT_Feet, ScreenBottom);
+        TXT_Punish = SpriteRenderPair.CreateRenderPair(_gameplayRenderer.gameObject, _gameplayRenderer.TXT_Punish, ScreenBottom);
 
         SplashSprites.Add(TXT_1);
         SplashSprites.Add(TXT_2);
@@ -468,5 +474,6 @@ public class SpriteList
         SplashSprites.Add(TXT_GameOver);
         SplashSprites.Add(TXT_AnyButton);
         SplashSprites.Add(TXT_Feet);
+        SplashSprites.Add(TXT_Punish);
     }
 }
