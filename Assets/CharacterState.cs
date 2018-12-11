@@ -119,10 +119,16 @@ public class CharacterState
             case GameplayEnums.CharacterState.AttackStartup:
                 Hitboxes.Add(CreateHitbox(GameplayEnums.HitboxType.Hurtbox_Limb, GameplayConstants.HURTBOX_STARTUP));
                 SetCharacterHurtboxStanding(Hitboxes);
+
+                //play sfx
+                GameManager.Instance.SoundManager.PlaySfx(SoundManager.SFX.Whiff);
                 break;
             case GameplayEnums.CharacterState.ThrowStartup:
                 Hitboxes.Add(CreateHitbox(GameplayEnums.HitboxType.Hurtbox_Limb, GameplayConstants.THROW_STARTUP_HURTBOX));
                 SetCharacterHurtboxStanding(Hitboxes);
+
+                //play sfx
+                GameManager.Instance.SoundManager.PlaySfx(SoundManager.SFX.Whiff);
                 break;
             case GameplayEnums.CharacterState.WalkBack:
             case GameplayEnums.CharacterState.WalkForward:

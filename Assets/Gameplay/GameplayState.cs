@@ -568,10 +568,16 @@ namespace Gameplay
                     _currentState.RemainingHitstop = GameplayConstants.BLOCK_HITSTOP;
                     //give gauge
                     _currentState.P1_CState.AddGauge(1);
+
+                    //play sfx
+                    GameManager.Instance.SoundManager.PlaySfx(SoundManager.SFX.Block);
                 }
                 else
                 {
                     p2_is_hit = true;
+                    
+                    //play sfx
+                    GameManager.Instance.SoundManager.PlaySfx(SoundManager.SFX.Hit);
                 }
             }
             if (p2_hits_p1)
@@ -585,10 +591,16 @@ namespace Gameplay
                     _currentState.RemainingHitstop = GameplayConstants.BLOCK_HITSTOP;
                     //give gauge
                     _currentState.P2_CState.AddGauge(1);
+
+                    //play sfx
+                    GameManager.Instance.SoundManager.PlaySfx(SoundManager.SFX.Block);
                 }
                 else
                 {
                     p1_is_hit = true;
+
+                    //play sfx
+                    GameManager.Instance.SoundManager.PlaySfx(SoundManager.SFX.Hit);
                 }
             }
 
@@ -616,6 +628,9 @@ namespace Gameplay
                 _currentState.P1_StateFrames = 0;
                 _currentState.P1_Hitboxes.RemoveAll(o => o.HitboxType == GameplayEnums.HitboxType.Hurtbox_Limb);
                 _currentState.P1_Hitboxes.RemoveAll(o => o.HitboxType == GameplayEnums.HitboxType.Hitbox_Throw);
+
+                //play sfx
+                GameManager.Instance.SoundManager.PlaySfx(SoundManager.SFX.ThrowBreak);
             }
             else if (p1_throws_p2)
             {
@@ -649,6 +664,9 @@ namespace Gameplay
                 _currentState.P1_StateFrames = 0;
                 _currentState.P1_Hitboxes.RemoveAll(o => o.HitboxType == GameplayEnums.HitboxType.Hurtbox_Limb);
                 _currentState.P1_Hitboxes.RemoveAll(o => o.HitboxType == GameplayEnums.HitboxType.Hitbox_Attack);
+
+                //play sfx
+                GameManager.Instance.SoundManager.PlaySfx(SoundManager.SFX.Clash);
             }
 
             return res;

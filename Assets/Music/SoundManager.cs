@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SoundManager : MonoBehaviour {
+    //music
     [SerializeField]
     private AudioClip BattleTheme1;
     [SerializeField]
     private AudioClip MenuTheme1;
     
-
+    //announcer clips
     [SerializeField]
     private AudioClip Counterhit; // ouch
     [SerializeField]
@@ -26,6 +27,21 @@ public class SoundManager : MonoBehaviour {
     [SerializeField]
     private AudioClip WhiffPunish; // nice
 
+    //sfx
+    [SerializeField]
+    private AudioClip Hit;
+    [SerializeField]
+    private AudioClip Block;
+    [SerializeField]
+    private AudioClip Whiff;
+    [SerializeField]
+    private AudioClip ThrowBreak;
+    [SerializeField]
+    private AudioClip Clash;
+
+    public enum SFX { Hit, Block, Whiff, ThrowBreak, Clash }
+
+
     private AudioSource BgmSource;
     private AudioSource VoiceSource;
 
@@ -36,7 +52,7 @@ public class SoundManager : MonoBehaviour {
     public void PlayRoundEndVoice(GameplayEnums.Outcome _outcome)
     {
         AudioClip clip = null;
-        switch(_outcome)
+        switch (_outcome)
         {
             case GameplayEnums.Outcome.Counter:
                 clip = Counterhit;
@@ -61,6 +77,35 @@ public class SoundManager : MonoBehaviour {
                 break;
             case GameplayEnums.Outcome.WhiffPunish:
                 clip = WhiffPunish;
+                break;
+        }
+        if (clip != null)
+        {
+            VoiceSource.clip = clip;
+            VoiceSource.time = 0f;
+            VoiceSource.Play();
+        }
+    }
+
+    public void PlaySfx(SFX _sfx)
+    {
+        AudioClip clip = null;
+        switch(_sfx)
+        {
+            case SFX.Block:
+                clip = Block;
+                break;
+            case SFX.Hit:
+                clip = Hit;
+                break;
+            case SFX.Whiff:
+                clip = Whiff;
+                break;
+            case SFX.ThrowBreak:
+                clip = ThrowBreak;
+                break;
+            case SFX.Clash:
+                clip = Clash;
                 break;
         }
         if (clip != null)
