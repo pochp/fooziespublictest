@@ -51,6 +51,10 @@ Timeout and trades give a point to both players, unless one player would win fro
 
 [5. Changelog]
 
+1.6
+-added punish text (still doesnt work with sweep and no sound yet)
+-new character : ARMOR
+
 1.5
 -added music and voice effects
 -remade input reading, using Rewired now. Disabled button setting functionality.
