@@ -18,11 +18,17 @@ public class Inputs
     }
 }
 
+
+/// <summary>
+/// Mostly debugging or temp solutions
+/// </summary>
 public class CommonInputs
 {
     public bool F4;//remap controllers
+    public bool F3;//set AI player 2
     public CommonInputs()
     {
         F4 = false;
+        F3 = false;
     }
 }

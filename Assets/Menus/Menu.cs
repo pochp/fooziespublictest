@@ -29,6 +29,11 @@ namespace Assets.Menus
 
         public override void Update(Inputs _inputs)
         {
+            if(_inputs.Common_Inputs.F3)
+            {
+                Input.InputSources.InputSourceManager.GetInstance().P2_InputSource = new Input.AiPlayer();
+            }
+
             if(_inputs.Common_Inputs.F4)
             {
                 InputMappingInCourse = true;

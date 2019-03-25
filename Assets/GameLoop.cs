@@ -74,11 +74,14 @@ public class GameLoop : MonoBehaviour {
     {
         CommonInputs ci = new CommonInputs();
         ci.F4 = Input.GetKeyDown(KeyCode.F4);
+        ci.F3 = Input.GetKeyDown(KeyCode.F3);
         return ci;
     }
 
     private SinglePlayerInputs GetInputs(bool _p1)
     {
+        return Assets.Input.InputSources.InputSourceManager.GetInputs(_p1);
+        //rewired hidden by inputsourcemanager now to allow AI and netplay
         return InputReaderRewired.GetInputs(_p1);
         //not rewired version, default unity input binding
         short direction = 5;
