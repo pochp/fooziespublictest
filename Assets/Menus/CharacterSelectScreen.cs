@@ -6,7 +6,7 @@ using Match;
 
 namespace Assets.Menus
 {
-    class CharacterSelectScreen : Menu
+    public class CharacterSelectScreen : Menu
     {
         public const string STR_SWEEP = "Sweep";
         public const string STR_DASH = "Dash";

@@ -66,7 +66,14 @@ public class ApplicationStateManager
         GameManager.Instance.SoundManager.SetGameplayAudio();
     }
 
-
+    /// <summary>
+    /// Gets the application state, only for AI use.
+    /// </summary>
+    /// <returns></returns>
+    internal ApplicationState GetApplicationState()
+    {
+        return m_currentApplicationState;
+    }
 
 
     //for debugging

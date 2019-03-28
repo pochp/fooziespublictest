@@ -75,6 +75,7 @@ public class GameLoop : MonoBehaviour {
         CommonInputs ci = new CommonInputs();
         ci.F4 = Input.GetKeyDown(KeyCode.F4);
         ci.F3 = Input.GetKeyDown(KeyCode.F3);
+        ci.F2 = Input.GetKeyDown(KeyCode.F2);
         return ci;
     }
 

@@ -17,7 +17,14 @@ namespace Gameplay
     public class GameplayState : ApplicationState
     {
         public GameplayRenderer GameplayRendererObject;
-        private GameState m_previousState;
+        private List<GameState> m_previousStates;
+        private GameState m_previousState
+        {
+            get
+            {
+                return m_previousStates[m_previousStates.Count - 1];
+            }
+        }
         public MatchState Match;
         SinglePlayerInputs m_p1LastInputs;//for debugging
         SinglePlayerInputs m_p2LastInputs;
@@ -34,17 +41,31 @@ namespace Gameplay
 
         private GameplayState(Match.SetData _setData)
         {
+            m_previousStates =  new List<GameState>();
             m_setData = _setData;
             Match = new MatchState();
             CurrentSplashState = new SplashState();
-            m_previousState = new GameState(_setData.InitData);
-            m_previousState = SetRoundStart();
+            m_previousStates.Add(new GameState(_setData.InitData));
+            m_previousStates.Add(SetRoundStart());
         }
 
         
         public override void Update(Inputs _inputs)
         {
             GameplayStateUpdate(_inputs.P1_Inputs, _inputs.P2_Inputs);
+        }
+
+        public GameState GetPastState(int framesAgo)
+        {
+            if(framesAgo + 1 > m_previousStates.Count)
+            {
+                return m_previousStates[0];
+            }
+            if (framesAgo < 0)
+            {
+                return m_previousStates[m_previousStates.Count - 1];
+            }
+            return m_previousStates[m_previousStates.Count - 1 - framesAgo];
         }
 
         void GameplayStateUpdate(SinglePlayerInputs _p1Inputs, SinglePlayerInputs _p2Inputs)
@@ -97,7 +118,7 @@ namespace Gameplay
                     isRotating = true;
                 }
                 --currentState.RemainingTime;
-                m_previousState = currentState;
+                m_previousStates.Add(currentState);
 
             }
 
@@ -130,7 +151,7 @@ namespace Gameplay
                             CurrentSplashState.FramesRemaining = GameplayConstants.GAME_OVER_LENGTH;
                         }
                         else
-                            m_previousState = SetRoundStart();
+                            m_previousStates.Add(SetRoundStart());
                         break;
                     case SplashState.State.RoundStart_3:
                         CurrentSplashState.CurrentState = SplashState.State.RoundStart_2;

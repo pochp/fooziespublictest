@@ -26,9 +26,11 @@ public class CommonInputs
 {
     public bool F4;//remap controllers
     public bool F3;//set AI player 2
+    public bool F2;//set AI player 2
     public CommonInputs()
     {
         F4 = false;
         F3 = false;
+        F2 = false;
     }
 }
