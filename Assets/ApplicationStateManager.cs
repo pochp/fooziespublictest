@@ -62,7 +62,7 @@ public class ApplicationStateManager
 
     public void SetGameplayState(Match.SetData _setData)
     {
-        SetCurrentApplicationState(Gameplay.GameplayState.CreateGameplayState(_setData, m_renderers.GameplayR));
+        SetCurrentApplicationState(Gameplay.GameplayState.CreateGameplayState(_setData, m_renderers.GameplayR, GameManager.Instance.IsOnlineMatch));
         GameManager.Instance.SoundManager.SetGameplayAudio();
     }
 

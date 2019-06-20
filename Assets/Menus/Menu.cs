@@ -1,4 +1,5 @@
 ﻿using Assets.Input.InputSources.AI;
+using Assets.Utility.Netplay;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace Assets.Menus
 
         private MenuRenderer m_renderer;
 
-        protected Menu(List<MenuItem> _items, IRenderer _renderer)
+        protected Menu(List<MenuItem> _items, IRenderer _renderer) : base()
         {
             Items = _items;
             P1 = new PlayerInMenu(_items.First());
@@ -38,6 +39,24 @@ namespace Assets.Menus
             {
                 Input.InputSources.InputSourceManager.GetInstance().P1_InputSource = new Input.AiPlayer(true, typeof(BasicAi));
                 Input.InputSources.InputSourceManager.GetInstance().P2_InputSource = new Input.AiPlayer(false, typeof(BasicDelayedAi));
+            }
+            if (_inputs.Common_Inputs.F5)
+            {
+                Input.InputSources.InputSourceManager.GetInstance().P2_InputSource = new Input.RemotePlayer();
+                GameManager.Instance.IsOnlineMatch = true;
+                GameManager.Instance.NetplayState.IsHost = true;
+                Communication.InitializeCommuncationSettings(true);
+            }
+            if (_inputs.Common_Inputs.F6)
+            {
+                Input.InputSources.InputSourceManager.GetInstance().P2_InputSource = new Input.RemotePlayer();
+                GameManager.Instance.IsOnlineMatch = true;
+                GameManager.Instance.NetplayState.IsHost = false;
+                Communication.InitializeCommuncationSettings(false);
+            }
+            if (_inputs.Common_Inputs.F12)
+            {
+                GameManager.Instance.CreateConfigFile();
             }
 
             if (_inputs.Common_Inputs.F4)
@@ -73,8 +92,8 @@ namespace Assets.Menus
                 m_lastInputsP2 = _p2Inputs;
 
             //update character selection
-            UpdateCharacterSelection(_p1Inputs, P1, m_lastInputsP1);
-            UpdateCharacterSelection(_p2Inputs, P2, m_lastInputsP2);
+            UpdatePlayerSelection(_p1Inputs, P1, m_lastInputsP1);
+            UpdatePlayerSelection(_p2Inputs, P2, m_lastInputsP2);
             m_lastInputsP1 = _p1Inputs;
             m_lastInputsP2 = _p2Inputs;
 
@@ -84,16 +103,38 @@ namespace Assets.Menus
 
         protected virtual MenuResult EvaluateMenuResult()
         {
-            if (P1.SelectionState == PlayerInMenu.SelectionStates.Confirmed &&
+            var gamemanager = GameManager.Instance;
+            if (gamemanager.IsOnlineMatch)
+            {
+                //assume that if p1 has selected a character it means he's ready.
+                //
+                // p1 has selected a character, and recieved that opponent is ready : PROCEED
+                // p1 has selected a character, but opponent has not : remain, and send out signal saying that you are ready
+                // p1 has not selected a character : remain, and send out signal saying that you are NOT ready
+                //
+
+                if(P1.SelectionState == PlayerInMenu.SelectionStates.Confirmed)// && gamemanager.NetplayState.HasRecievedReadyFromOpponent)
+                {
+                    return MenuResult.Continue;
+                }
+                if (P1.SelectionState == PlayerInMenu.SelectionStates.Cancel ||
+                    P2.SelectionState == PlayerInMenu.SelectionStates.Cancel)
+                    return MenuResult.Back;
+
+            }
+            else
+            {
+                if (P1.SelectionState == PlayerInMenu.SelectionStates.Confirmed &&
                 P2.SelectionState == PlayerInMenu.SelectionStates.Confirmed)
-                return MenuResult.Continue;
-            if (P1.SelectionState == PlayerInMenu.SelectionStates.Cancel ||
-                P2.SelectionState == PlayerInMenu.SelectionStates.Cancel)
-                return MenuResult.Back;
+                    return MenuResult.Continue;
+                if (P1.SelectionState == PlayerInMenu.SelectionStates.Cancel ||
+                    P2.SelectionState == PlayerInMenu.SelectionStates.Cancel)
+                    return MenuResult.Back;
+            }
             return MenuResult.Remain;
         }
 
-        protected void UpdateCharacterSelection(SinglePlayerInputs _inputs, PlayerInMenu _player, SinglePlayerInputs _lastInputs)
+        protected void UpdatePlayerSelection(SinglePlayerInputs _inputs, PlayerInMenu _player, SinglePlayerInputs _lastInputs)
         {
             if (_inputs.A && !_lastInputs.A)
                 _player.SelectionState = PlayerInMenu.SelectionStates.Confirmed;
@@ -210,6 +251,11 @@ namespace Assets.Menus
                 Item = _item;
                 Distance = _distance;
             }
+        }
+
+        public override void Rollback(List<Inputs> _inputsHistory)
+        {
+            //menus don't get to rollback
         }
     }
 }

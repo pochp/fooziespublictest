@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Match;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,7 +27,7 @@ namespace Assets.Menus
         {
             if (_result == MenuResult.Continue)
             {
-                Match.SetData set = new Match.SetData();
+                SetData set = new SetData();
                 if (P1.SelectionState == PlayerInMenu.SelectionStates.Confirmed)
                     if (P1.SelectedItem.ItemName == STR_CHARACTERSELECT)
                         ApplicationStateManager.GetInstance().SetCharacterSelectScreen(set); //go to character select screen

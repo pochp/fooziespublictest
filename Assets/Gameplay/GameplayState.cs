@@ -5,6 +5,9 @@ using System.Text;
 using System.Collections;
 using UnityEngine;
 using FooziesConstants;
+using Assets.States;
+using Assets.Match;
+using Assets.Gameplay;
 
 namespace Gameplay
 {
@@ -14,42 +17,70 @@ namespace Gameplay
     /// When the state of the game is a match (and not a menu)
     /// </summary>
 
-    public class GameplayState : ApplicationState
+    public abstract class GameplayState : ApplicationState
     {
         public GameplayRenderer GameplayRendererObject;
         private List<GameState> m_previousStates;
+        private List<List<GameState>> m_statesPreviousRounds;
         private GameState m_previousState
         {
             get
             {
-                return m_previousStates[m_previousStates.Count - 1];
+                if (m_previousStates.Count > 0)
+                    return m_previousStates[m_previousStates.Count - 1];
+                else if (m_statesPreviousRounds.Count > 0)
+                    return m_statesPreviousRounds.Last().LastOrDefault();
+                return null ;
             }
         }
         public MatchState Match;
         SinglePlayerInputs m_p1LastInputs;//for debugging
         SinglePlayerInputs m_p2LastInputs;
         SplashState CurrentSplashState;
-        Match.SetData m_setData;
+        protected Match.SetData m_setData;
 
-        static public GameplayState CreateGameplayState(Match.SetData _setData, GameplayRenderer _renderer)
+        static public GameplayState CreateGameplayState(Match.SetData _setData, GameplayRenderer _renderer, bool _online)
         {
-            GameplayState gs = new GameplayState(_setData);
+            GameplayState gs;
+            if(_online)
+                gs = new OnlineGame(_setData);
+            else
+                gs = new OfflineGame(_setData);
             gs.GameplayRendererObject = _renderer;
             gs.StateRenderer = _renderer;
             return gs;
         }
 
-        private GameplayState(Match.SetData _setData)
+        protected GameplayState(Match.SetData _setData) : base()
         {
             m_previousStates =  new List<GameState>();
+            m_statesPreviousRounds = new List<List<GameState>>();
             m_setData = _setData;
             Match = new MatchState();
             CurrentSplashState = new SplashState();
-            m_previousStates.Add(new GameState(_setData.InitData));
+            m_previousStates.Add(new GameState(_setData.InitData, 0));
             m_previousStates.Add(SetRoundStart());
         }
 
-        
+        /// <inheritdoc />
+        public override void Rollback(List<Inputs> _inputsHistory)
+        {
+            int numberOfFramesToRollback = _inputsHistory.Count;
+            //set current state back X steps
+            int startingFrameToRollback = m_previousStates.Count - numberOfFramesToRollback;
+            if (startingFrameToRollback < 0)
+                startingFrameToRollback = 0;
+            m_previousStates.RemoveRange(startingFrameToRollback, m_previousStates.Count - startingFrameToRollback);
+
+            //recalculate up to current state
+            foreach(var inputAtFrame in _inputsHistory)
+            {
+                //there is a risk that the splash screen state might not sync correctly, so if this is a problem, consider it
+                GameplayStateUpdate(inputAtFrame.P1_Inputs, inputAtFrame.P2_Inputs, true);
+            }
+        }
+
+
         public override void Update(Inputs _inputs)
         {
             GameplayStateUpdate(_inputs.P1_Inputs, _inputs.P2_Inputs);
@@ -68,7 +99,7 @@ namespace Gameplay
             return m_previousStates[m_previousStates.Count - 1 - framesAgo];
         }
 
-        void GameplayStateUpdate(SinglePlayerInputs _p1Inputs, SinglePlayerInputs _p2Inputs)
+        void GameplayStateUpdate(SinglePlayerInputs _p1Inputs, SinglePlayerInputs _p2Inputs, bool skipRender = false)
         {
 
 
@@ -82,7 +113,7 @@ namespace Gameplay
                     ApplicationStateManager.GetInstance().SetCharacterSelectScreen(m_setData);
                 }
             }
-            if (UpdateSplashScreen())
+            else if (UpdateSplashScreen())
             {
 
             }
@@ -121,12 +152,14 @@ namespace Gameplay
                 m_previousStates.Add(currentState);
 
             }
+            if (!skipRender)
+            {
+                //5. Render Scene
+                GameplayRendererObject.RenderScene(m_previousState, Match, CurrentSplashState);
 
-            //5. Render Scene
-            GameplayRendererObject.RenderScene(m_previousState, Match, CurrentSplashState);
-
-            //6. Camera Tests
-            CameraMoveTest(Match);
+                //6. Camera Tests
+                CameraMoveTest(Match);
+            }
         }
 
         //returns whether or not to stop here and wait a few more frames
@@ -145,13 +178,17 @@ namespace Gameplay
                 switch (CurrentSplashState.CurrentState)
                 {
                     case SplashState.State.RoundOver_ShowResult:
+                        m_statesPreviousRounds.Add(m_previousStates); //keep a backup of the round that just ended, regardless if it's match end.
                         if (Match.GameOver)
                         {
                             CurrentSplashState.CurrentState = SplashState.State.GameOver;
                             CurrentSplashState.FramesRemaining = GameplayConstants.GAME_OVER_LENGTH;
                         }
                         else
+                        {
+                            m_previousStates = new List<GameState>();
                             m_previousStates.Add(SetRoundStart());
+                        }
                         break;
                     case SplashState.State.RoundStart_3:
                         CurrentSplashState.CurrentState = SplashState.State.RoundStart_2;
@@ -183,6 +220,8 @@ namespace Gameplay
 
         public override string GetDebugInfo()
         {
+            if (m_previousState == null)
+                return "previous state null";
             string score = "\n\rP1 Score : " + Match.P1_Score.ToString() +
                 "\n\rP2 Score : " + Match.P2_Score.ToString() +
                 "\n\rTime : " + (m_previousState.RemainingTime / 60).ToString();
@@ -228,7 +267,7 @@ namespace Gameplay
             CurrentSplashState.CurrentState = SplashState.State.RoundStart_3;
             CurrentSplashState.FramesRemaining = GameplayConstants.FRAMES_COUNTDOWN;
 
-            GameState state = new GameState(m_setData.InitData);
+            GameState state = new GameState(m_setData.InitData, 0);
 
             state.P1_Gauge = m_previousState.P1_Gauge;
             state.P1_Hitboxes.Add(CreateCharacterStartingHitbox());
@@ -382,7 +421,7 @@ namespace Gameplay
 
         GameState UpdateGameStateWithInputs(SinglePlayerInputs _p1Inputs, SinglePlayerInputs _p2Inputs, GameState _previousState)
         {
-            GameState updatedState = new GameState(_previousState);
+            GameState updatedState = new GameState(_previousState, _previousState.FrameNumber + 1);
 
             //Check if current state can be affected by inputs (idle, crouch, walking into buttons, as well as throw tech)
 

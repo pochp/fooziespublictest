@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using FooziesConstants;
+using Assets.Match;
 
 public class CharacterState
 {

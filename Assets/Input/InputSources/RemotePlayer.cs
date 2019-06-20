@@ -9,7 +9,7 @@ namespace Assets.Input
     {
         public SinglePlayerInputs GetInputs()
         {
-            throw new NotImplementedException();
+            return new SinglePlayerInputs();
         }
 
         public bool IsP1()

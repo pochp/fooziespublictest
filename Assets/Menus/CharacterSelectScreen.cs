@@ -47,7 +47,7 @@ namespace Assets.Menus
             P2.SelectedItem = Items.First(o => o.ItemName == GetMatchingCharacterName(m_currentSetData.P2_SelectedCharacter));
         }
 
-        private string GetMatchingCharacterName(Character _char)
+        public static string GetMatchingCharacterName(Character _char)
         {
             if (_char is Sweep)
                 return STR_SWEEP;
@@ -58,9 +58,9 @@ namespace Assets.Menus
             return string.Empty;
         }
 
-        private Character DetermineSelectedCharacter(PlayerInMenu _player)
+        public static Character GetCharacterFromString(string characterName)
         {
-            switch(_player.SelectedItem.ItemName)
+            switch (characterName)
             {
                 case STR_DASH:
                     return new Dash();
@@ -69,6 +69,12 @@ namespace Assets.Menus
                 case STR_ARMOR:
                     return new Armor();
             }
+            throw new Exception("No Character for string : " + characterName);
+        }
+
+        private Character DetermineSelectedCharacter(PlayerInMenu _player)
+        {
+            return GetCharacterFromString(_player.SelectedItem.ItemName);
             throw new Exception("No Character Selected");
         }
 
